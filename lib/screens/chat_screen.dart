@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flash_chat/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:flash_chat/screens/welcome_screen.dart';
+import 'package:flash_chat/dump/welcome_screen.dart';
 
 final _firestore = FirebaseFirestore.instance;
 User? loggedInUser;
