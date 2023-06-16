@@ -2,7 +2,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flash_chat/screens/chat_screen.dart';
 import 'package:flash_chat/screens/login_screen.dart';
 import 'package:flash_chat/screens/registration_screen.dart';
-import 'package:flash_chat/screens/welcome_screen.dart';
+import 'package:flash_chat/screens/splash_screen.dart';
+import 'package:flash_chat/dump/welcome_screen.dart';
 import 'package:flutter/material.dart';
 import 'screens/reset_password.dart';
 
@@ -18,6 +19,7 @@ class FlashChat extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: ThemeData.dark().copyWith(
         textTheme: const TextTheme(
           bodyLarge: TextStyle(color: Colors.black54),
@@ -25,13 +27,13 @@ class FlashChat extends StatelessWidget {
           bodySmall: TextStyle(color: Colors.black54),
         ),
       ),
-      initialRoute: LoginScreen.id,
+      initialRoute: "splash",
       routes: {
-        WelcomeScreen.id: (context) => WelcomeScreen(),
         ChatScreen.id: (context) => const ChatScreen(),
         LoginScreen.id: (context) => const LoginScreen(),
         RegistrationScreen.id: (context) => const RegistrationScreen(),
-        ResetPasswordScreen.id: (context) => const ResetPasswordScreen()
+        ResetPasswordScreen.id: (context) => const ResetPasswordScreen(),
+        'splash': (context) => const SplashScreen()
       },
     );
   }
