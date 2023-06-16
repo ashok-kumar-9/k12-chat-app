@@ -41,33 +41,53 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               const SizedBox(
-                height: 48.0,
+                height: 72.0,
               ),
-              TextField(
-                textAlign: TextAlign.center,
-                keyboardType: TextInputType.emailAddress,
-                onChanged: (value) {
-                  email = value;
-                },
-                style: const TextStyle(
-                  color: Colors.black,
+              Container(
+                height: 60,
+                alignment: Alignment.centerLeft,
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.blue,
+                  ),
+                  borderRadius: const BorderRadius.all(Radius.circular(12))
                 ),
-                decoration: kTextFieldDecoration,
+                child: TextField(
+                  textAlign: TextAlign.left,
+                  keyboardType: TextInputType.emailAddress,
+                  onChanged: (value) {
+                    email = value;
+                  },
+                  style: const TextStyle(
+                    color: Colors.black,
+                  ),
+                  decoration: kTextFieldDecoration,
+                ),
               ),
               const SizedBox(
-                height: 8.0,
+                height: 12.0,
               ),
-              TextField(
-                obscureText: true,
-                textAlign: TextAlign.center,
-                keyboardType: TextInputType.text,
-                onChanged: (value) {
-                  //Do something with the user input.
-                  password = value;
-                },
-                style: kTextInputStyle,
-                decoration: kTextFieldDecoration.copyWith(
-                    hintText: 'Enter your password'),
+              Container(
+                height: 60,
+                alignment: Alignment.centerLeft,
+                decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.blue,
+                    ),
+                  borderRadius: const BorderRadius.all(Radius.circular(12)),
+                ),
+                child: TextField(
+                  obscureText: true,
+                  textAlign: TextAlign.left,
+                  keyboardType: TextInputType.text,
+                  onChanged: (value) {
+                    //Do something with the user input.
+                    password = value;
+                  },
+                  style: kTextInputStyle,
+                  decoration: kTextFieldDecoration.copyWith(
+                      hintText: 'Enter your password'),
+                ),
               ),
               const SizedBox(
                 height: 24.0,
@@ -76,7 +96,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
                 child: Material(
                   color: Colors.lightBlueAccent,
-                  borderRadius: const BorderRadius.all(Radius.circular(30.0)),
+                  borderRadius: const BorderRadius.all(Radius.circular(16.0)),
                   elevation: 5.0,
                   child: MaterialButton(
                     onPressed: () async {
@@ -143,28 +163,36 @@ class _LoginScreenState extends State<LoginScreen> {
                       }
                     },
                     minWidth: 200.0,
-                    height: 42.0,
+                    height: 60.0,
                     child: const Text(
                       'Log In',
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
                     ),
                   ),
                 ),
               ),
-              TextButton(
-                child: const Text(
-                  'Sign Up Instead',
-                ),
-                onPressed: () {
-                  Navigator.pushNamed(context, RegistrationScreen.id);
-                },
-              ),
-              TextButton(
-                child: const Text(
-                  'Forgot Password',
-                ),
-                onPressed: () {
-                  Navigator.pushNamed(context, ResetPasswordScreen.id);
-                },
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  TextButton(
+                    child: const Text(
+                      'New User? Sign Up',
+                    ),
+                    onPressed: () {
+                      Navigator.pushNamed(context, RegistrationScreen.id);
+                    },
+                  ),
+                  TextButton(
+                    child: const Text(
+                      'Forgot Password',
+                    ),
+                    onPressed: () {
+                      Navigator.pushNamed(context, ResetPasswordScreen.id);
+                    },
+                  ),
+                ],
               ),
             ],
           ),
