@@ -6,6 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+extension EmailValidator on String {
+  bool isValidEmail() {
+    return RegExp(
+            r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
+        .hasMatch(this);
+  }
+}
+
 class RegistrationScreen extends StatefulWidget {
   static const String id = 'registration_screen';
 
@@ -15,10 +23,39 @@ class RegistrationScreen extends StatefulWidget {
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
+  final _controller = TextEditingController();
   final _auth = FirebaseAuth.instance;
   String? email;
   String? password;
   bool _saving = false;
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+
+    _controller.dispose();
+    super.dispose();
+  }
+
+  String? get _errorText {
+    // at any time, we can get the text from _controller.value.text
+    final text = _controller.value.text;
+    // Note: you can do your own custom validation here
+    // Move this logic this outside the widget for more testable code
+    if (text.isEmpty) {
+      return 'Can\'t be empty';
+    }
+    if (text.length < 4) {
+      return 'Too short';
+    }
+    if (text.isEmpty ||
+        !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(text)) {
+      return "Enter valid email address";
+    }
+    // return null if the text is valid
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,12 +87,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               TextField(
                 textAlign: TextAlign.center,
                 keyboardType: TextInputType.emailAddress,
-                onChanged: (value) {
-                  //Do something with the user input.
-                  email = value;
-                },
+                onChanged: (_) => setState(() {}),
                 style: kTextInputStyle,
-                decoration: kTextFieldDecoration,
+                decoration:
+                    kTextFieldDecoration.copyWith(errorText: _errorText),
+                controller: _controller,
               ),
               const SizedBox(
                 height: 8.0,
@@ -78,69 +114,74 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 buttonColor: Colors.blueAccent,
                 textOnButton: 'Register',
                 callBack: () async {
-                  // print(email);
-                  setState(() {
-                    _saving = true;
-                  });
-                  try {
-                    final newUser = await _auth.createUserWithEmailAndPassword(
-                        email: email!, password: password!);
+                  if (_errorText == null) {
+                    // print(email);
+                    setState(() {
+                      _saving = true;
+                    });
+                    try {
+                      final newUser =
+                          await _auth.createUserWithEmailAndPassword(
+                              email: email!, password: password!);
 
-                    Navigator.pushNamed(context, ChatScreen.id);
-                    setState(() {
-                      _saving = false;
-                    });
-                    Fluttertoast.showToast(
-                      msg: 'Welcome to Flash Chat',
-                      toastLength: Toast.LENGTH_LONG,
-                      gravity: ToastGravity.BOTTOM,
-                      timeInSecForIosWeb: 2,
-                      backgroundColor: Colors.white,
-                      textColor: Colors.black87,
-                      fontSize: 16.0,
-                    );
-                  } on FirebaseAuthException catch (e) {
-                    setState(() {
-                      _saving = false;
-                    });
-                    String errorMessage;
-                    switch (e.code) {
-                      case "invalid-email":
-                        errorMessage = "Enter a valid email address";
-                        break;
-                      case "wrong-password":
-                        errorMessage = "Your password is wrong.";
-                        break;
-                      case "user-not-found":
-                        errorMessage = "Email isn't registered";
-                        break;
-                      case "user-disabled":
-                        errorMessage =
-                            "User with this email has been disabled.";
-                        break;
-                      case "too-many-requests":
-                        errorMessage = "Too many requests. Try again later.";
-                        break;
-                      case "operation-not-allowed":
-                        errorMessage =
-                            "Signing in with Email and Password is not enabled.";
-                        break;
-                      case "email-already-in-use":
-                        errorMessage =
-                            "Email already registered. Try loggin in";
-                        break;
-                      default:
-                        errorMessage = "An undefined Error happened.";
-                    }
-                    print(e.code);
-                    Fluttertoast.showToast(
-                        msg: errorMessage,
+                      Navigator.pushNamed(context, ChatScreen.id);
+                      setState(() {
+                        _saving = false;
+                      });
+                      Fluttertoast.showToast(
+                        msg: 'Welcome to Flash Chat',
                         toastLength: Toast.LENGTH_LONG,
                         gravity: ToastGravity.BOTTOM,
                         timeInSecForIosWeb: 2,
-                        backgroundColor: Colors.red[400],
-                        textColor: Colors.white,
-                        fontSize: 16.0);
+                        backgroundColor: Colors.white,
+                        textColor: Colors.black87,
+                        fontSize: 16.0,
+                      );
+                    } on FirebaseAuthException catch (e) {
+                      setState(() {
+                        _saving = false;
+                      });
+                      String errorMessage;
+                      switch (e.code) {
+                        case "invalid-email":
+                          errorMessage = "Enter a valid email address";
+                          break;
+                        case "wrong-password":
+                          errorMessage = "Your password is wrong.";
+                          break;
+                        case "user-not-found":
+                          errorMessage = "Email isn't registered";
+                          break;
+                        case "user-disabled":
+                          errorMessage =
+                              "User with this email has been disabled.";
+                          break;
+                        case "too-many-requests":
+                          errorMessage = "Too many requests. Try again later.";
+                          break;
+                        case "operation-not-allowed":
+                          errorMessage =
+                              "Signing in with Email and Password is not enabled.";
+                          break;
+                        case "email-already-in-use":
+                          errorMessage =
+                              "Email already registered. Try loggin in";
+                          break;
+                        default:
+                          errorMessage = "An undefined Error happened.";
+                      }
+                      debugPrint(e.code);
+                      Fluttertoast.showToast(
+                          msg: errorMessage,
+                          toastLength: Toast.LENGTH_LONG,
+                          gravity: ToastGravity.BOTTOM,
+                          timeInSecForIosWeb: 2,
+                          backgroundColor: Colors.red[400],
+                          textColor: Colors.white,
+                          fontSize: 16.0);
+                    }
+                  } else {
+                    null;
                   }
                 },
               ),
