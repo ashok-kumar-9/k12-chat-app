@@ -22,13 +22,7 @@ class RegistrationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          leading: const BackButton(),
-          title: const Text('Sign Up'),
-        ),
-        backgroundColor: Colors.white,
-        body: const RegsiterForm());
+    return const Scaffold(body: RegsiterForm());
   }
 }
 
@@ -128,7 +122,9 @@ class _RegsiterFormState extends State<RegsiterForm> {
                   height: 24.0,
                 ),
                 RoundedButton(
-                  buttonColor: Colors.blueAccent,
+                  buttonColor: (password == null)
+                      ? Colors.grey[400]!
+                      : Colors.blueAccent,
                   textOnButton: 'Register',
                   callBack: () async {
                     setState(() {

@@ -45,51 +45,31 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(
                   height: 72.0,
                 ),
-                Container(
-                  height: 60,
-                  alignment: Alignment.centerLeft,
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.blue,
-                      ),
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(12))),
-                  child: TextField(
-                    textAlign: TextAlign.left,
-                    keyboardType: TextInputType.emailAddress,
-                    onChanged: (value) {
-                      email = value;
-                    },
-                    style: const TextStyle(
-                      color: Colors.black,
-                    ),
-                    decoration: kTextFieldDecoration,
+                TextField(
+                  textAlign: TextAlign.left,
+                  keyboardType: TextInputType.emailAddress,
+                  onChanged: (value) {
+                    email = value;
+                  },
+                  style: const TextStyle(
+                    color: Colors.black,
                   ),
+                  decoration: kTextFieldDecoration,
                 ),
                 const SizedBox(
                   height: 12.0,
                 ),
-                Container(
-                  height: 60,
-                  alignment: Alignment.centerLeft,
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.blue,
-                    ),
-                    borderRadius: const BorderRadius.all(Radius.circular(12)),
-                  ),
-                  child: TextField(
-                    obscureText: true,
-                    textAlign: TextAlign.left,
-                    keyboardType: TextInputType.text,
-                    onChanged: (value) {
-                      //Do something with the user input.
-                      password = value;
-                    },
-                    style: kTextInputStyle,
-                    decoration: kTextFieldDecoration.copyWith(
-                        hintText: 'Enter your password'),
-                  ),
+                TextField(
+                  obscureText: true,
+                  textAlign: TextAlign.left,
+                  keyboardType: TextInputType.text,
+                  onChanged: (value) {
+                    //Do something with the user input.
+                    password = value;
+                  },
+                  style: kTextInputStyle,
+                  decoration: kTextFieldDecoration.copyWith(
+                      hintText: 'Enter your password'),
                 ),
                 const SizedBox(
                   height: 24.0,
