@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flash_chat/components/round_button.dart';
 import 'package:flash_chat/constants.dart';
 import 'package:flash_chat/screens/chat_screen.dart';
+import 'package:flash_chat/services/error_messages.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -161,42 +162,8 @@ class _RegsiterFormState extends State<RegsiterForm> {
                           _saving = false;
                         });
                         String errorMessage;
-                        switch (e.code) {
-                          case "invalid-email":
-                            errorMessage = "Enter a valid email address";
-                            break;
-                          case "wrong-password":
-                            errorMessage = "Your password is wrong.";
-                            break;
-                          case "user-not-found":
-                            errorMessage = "Email isn't registered";
-                            break;
-                          case "user-disabled":
-                            errorMessage =
-                                "User with this email has been disabled.";
-                            break;
-                          case "too-many-requests":
-                            errorMessage =
-                                "Too many requests. Try again later.";
-                            break;
-                          case "operation-not-allowed":
-                            errorMessage =
-                                "Signing in with Email and Password is not enabled.";
-                            break;
-                          case "email-already-in-use":
-                            errorMessage =
-                                "Email already registered. Try loggin in";
-                            break;
-                          case 'weak-password':
-                            errorMessage =
-                                "Password should be atleast 6 characters long";
-                            break;
-                          case 'network-request-failed':
-                            errorMessage = "Network error";
-                            break;
-                          default:
-                            errorMessage = "An undefined Error happened.";
-                        }
+                        errorMessage = getErrorMessage('signup', e.code);
+
                         debugPrint(e.code);
                         Fluttertoast.showToast(
                             msg: errorMessage,

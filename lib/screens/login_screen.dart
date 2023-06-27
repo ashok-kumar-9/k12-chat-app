@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flash_chat/constants.dart';
 import 'package:flash_chat/screens/chat_screen.dart';
 import 'package:flash_chat/screens/registration_screen.dart';
+import 'package:flash_chat/services/error_messages.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -104,32 +105,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         setState(() {
                           _saving = false;
                         });
-                        String errorMessage;
-                        switch (e.code) {
-                          case "invalid-email":
-                            errorMessage = "Enter a valid email address";
-                            break;
-                          case "wrong-password":
-                            errorMessage = "Your password is wrong.";
-                            break;
-                          case "user-not-found":
-                            errorMessage = "Email isn't registered";
-                            break;
-                          case "user-disabled":
-                            errorMessage =
-                                "User with this email has been disabled.";
-                            break;
-                          case "too-many-requests":
-                            errorMessage =
-                                "Too many requests. Try again later.";
-                            break;
-                          case "operaetion-not-allowed":
-                            errorMessage =
-                                "Signing in with Email and Password is not enabled.";
-                            break;
-                          default:
-                            errorMessage = "An undefined Error happened.";
-                        }
+                        String errorMessage = getErrorMessage('login', e.code);
+
                         //print(e.code);
                         Fluttertoast.showToast(
                           msg: errorMessage,
