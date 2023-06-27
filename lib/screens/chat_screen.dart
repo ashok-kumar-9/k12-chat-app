@@ -84,6 +84,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       _firestore.collection('messages').add({
                         'text': messageText,
                         'sender': loggedInUser!.email,
+                        'time': DateTime.now(),
                       });
                       messageTextController.clear();
                     },
@@ -108,7 +109,7 @@ class MessageStream extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: _firestore.collection('messages').snapshots(),
+      stream: _firestore.collection('messages').orderBy('time').snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return Expanded(
@@ -118,6 +119,7 @@ class MessageStream extends StatelessWidget {
           );
         }
         var messages = snapshot.data!.docs.reversed;
+
         List<TextBubble> messageWidget = [];
         for (var it in messages) {
           messageWidget.add(TextBubble(it: it));
@@ -144,41 +146,176 @@ class TextBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool isMe = (loggedInUser!.email == it['sender']);
+    String name=it['sender'].toString().substring(0,2);
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Column(
-        crossAxisAlignment:
-            isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+      child: Row(
+        mainAxisAlignment:
+            isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
         children: [
-          Text(
-            it['sender'],
-            style: const TextStyle(
-              fontSize: 12.0,
-              color: Colors.black54,
-            ),
-          ),
-          Material(
-            borderRadius: BorderRadius.only(
-                topLeft:
-                    isMe ? const Radius.circular(30) : const Radius.circular(0),
-                topRight:
-                    isMe ? const Radius.circular(0) : const Radius.circular(30),
-                bottomLeft: const Radius.circular(30),
-                bottomRight: const Radius.circular(30)),
-            elevation: 5,
-            color: isMe ? Colors.lightBlue : Colors.white38,
-            child: Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Text(
-                '${it['text']}',
-                style: TextStyle(
-                  color: isMe ? Colors.white : Colors.black,
-                  fontSize: 15.0,
+          isMe ? const SizedBox() : Padding(
+            padding: const EdgeInsets.only(right: 4.0),
+            child: InkWell(
+              onTap: () {
+                showDialog(context: context, builder: (context) {
+                  return Dialog(
+                    elevation: 16,
+                    backgroundColor: Colors.transparent,
+                    child: Container(
+                      height: MediaQuery.of(context).size.height*0.25,
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20)
+                      ),
+                      padding: EdgeInsets.all(8),
+                      child: Column(
+                        children: [
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          CircleAvatar(
+                            radius: 40,
+                            backgroundColor: Colors.green[400],
+                            child: Text(
+                              name.substring(0,2),
+                              style: const TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 32,
+                          ),
+                          Text(
+                            it['sender'],
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 20,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          InkWell(
+                            onTap: () {
+
+                            },
+                            child: const Text(
+                              'Tap to chat',
+                              style: TextStyle(
+                                color: Colors.blue,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                });
+              },
+              child: CircleAvatar(
+                backgroundColor: Colors.green[400],
+                child: Padding(
+                  padding: const EdgeInsets.all(2.0),
+                  child: Text(
+                    name,
+                    style: const TextStyle(
+                      fontSize: 12.0,
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
               ),
             ),
           ),
+          Flexible(
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                    topLeft:
+                    isMe ? const Radius.circular(30) : const Radius.circular(0),
+                    topRight:
+                    isMe ? const Radius.circular(0) : const Radius.circular(30),
+                    bottomLeft: const Radius.circular(30),
+                    bottomRight: const Radius.circular(30)),
+                color: isMe ? Colors.lightBlue : Colors.grey[300],
+              ),
+             // elevation: 5,
+              child: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Text(
+                  '${it['text']}',
+                  style: TextStyle(
+                    color: isMe ? Colors.white : Colors.black,
+                    fontSize: 15.0,
+                    overflow: TextOverflow.visible,
+                  ),
+                  maxLines: 3,
+                ),
+              ),
+            ),
+          ),
+          isMe ? Padding(
+            padding: const EdgeInsets.only(left: 4.0),
+            child: InkWell(
+              onTap: () {
+                showDialog(context: context, builder: (context) {
+                  return Dialog(
+                    elevation: 16,
+                    child: Container(
+                      height: MediaQuery.of(context).size.height*0.2,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12)
+                      ),
+                      padding: EdgeInsets.all(8),
+                      child: Column(
+                        children: [
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          CircleAvatar(
+                            radius: 40,
+                            backgroundColor: Colors.purple[300],
+                            child: Text(
+                              name.substring(0,2),
+                              style: const TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 32,
+                          ),
+                          Text(
+                            it['sender'],
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 20,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                });
+              },
+              child: CircleAvatar(
+                backgroundColor: Colors.purple[300],
+                child: Padding(
+                  padding: const EdgeInsets.all(2.0),
+                  child: Text(
+                    name,
+                    style: const TextStyle(
+                      fontSize: 12.0,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ) : const SizedBox(),
         ],
       ),
     );

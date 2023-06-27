@@ -58,9 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   onChanged: (value) {
                     email = value;
                   },
-                  style: const TextStyle(
-                    color: Colors.black,
-                  ),
+                  style: kTextInputStyle,
                   decoration: kTextFieldDecoration,
                 ),
               ),

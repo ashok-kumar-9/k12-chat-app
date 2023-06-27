@@ -29,7 +29,7 @@ var kTextFieldDecoration = InputDecoration(
 );
 
 const kTextInputStyle = TextStyle(
-  color: Colors.black,
+  color: Colors.white,
 );
 
 Widget text2(context, text, onTap, id) {
