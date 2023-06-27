@@ -6,16 +6,22 @@ const kSendButtonTextStyle = TextStyle(
   fontSize: 18.0,
 );
 
-const kMessageTextFieldDecoration = InputDecoration(
-  contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+var kMessageTextFieldDecoration = InputDecoration(
+  contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
   hintText: 'Type your message here...',
+  hintStyle: TextStyle(
+    color: Colors.grey[600],
+  ),
   border: InputBorder.none,
 );
 
-const kMessageContainerDecoration = BoxDecoration(
-  border: Border(
-    top: BorderSide(color: Colors.lightBlueAccent, width: 2.0),
+var kMessageContainerDecoration = BoxDecoration(
+  border: Border.all(
+    color: Colors.blue,
+    width: 1,
   ),
+  borderRadius: BorderRadius.circular(24),
+  color: Colors.grey[200],
 );
 
 var kTextFieldDecoration = InputDecoration(
@@ -42,3 +48,6 @@ Widget text2(context, text, onTap, id) {
     },
   );
 }
+
+Color avatarBg1 = Colors.grey[350]??Colors.grey;
+Color avatarBg2 = Colors.blue;

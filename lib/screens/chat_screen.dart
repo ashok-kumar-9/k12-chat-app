@@ -4,6 +4,7 @@ import 'package:flash_chat/constants.dart';
 import 'package:flash_chat/screens/personal_chat_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flash_chat/dump/welcome_screen.dart';
+import 'package:flutter/services.dart';
 
 final _firestore = FirebaseFirestore.instance;
 User? loggedInUser;
@@ -18,7 +19,7 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   final messageTextController = TextEditingController();
-  String? messageText;
+  ValueNotifier<String> messageText = ValueNotifier('');
   final _auth = FirebaseAuth.instance;
 
   void getCurrentUser() {
@@ -41,63 +42,135 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        leading: null,
-        actions: <Widget>[
-          IconButton(
-              icon: const Icon(Icons.close),
-              onPressed: () {
-                //Implement logout functionality
-                _auth.signOut();
-                Navigator.pushNamed(context, WelcomeScreen.id);
-              }),
-        ],
-        title: const Text('⚡️Group Chat'),
-        backgroundColor: Colors.lightBlueAccent,
-      ),
-      body: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            const MessageStream(),
-            Container(
-              decoration: kMessageContainerDecoration,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Expanded(
-                    child: TextField(
-                      controller: messageTextController,
-                      onChanged: (value) {
-                        messageText = value;
-                        //Do something with the user input.
+    return WillPopScope(
+      onWillPop: () async {
+        showModalBottomSheet(context: context, builder: (context) {
+          return Container(
+            height: 100,
+            color: Colors.white,
+            padding: const EdgeInsets.all(8),
+            child: Column(
+              children: [
+                const Text(
+                  'Do you want to exit?',
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.black
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        SystemNavigator.pop();
                       },
-                      decoration: kMessageTextFieldDecoration,
-                      style: const TextStyle(color: Colors.blueGrey),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width*0.25,
+                        height: 36,
+                        color: Colors.red,
+                        padding: const EdgeInsets.all(8),
+                        child: const Center(
+                          child: Text(
+                            'Yes',
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      //Implement send functionality.
-                      _firestore.collection('messages').add({
-                        'text': messageText,
-                        'sender': loggedInUser!.email,
-                        'time': DateTime.now(),
-                      });
-                      messageTextController.clear();
-                    },
-                    child: const Text(
-                      'Send',
-                      style: kSendButtonTextStyle,
+                    InkWell(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: Container(
+                        width: MediaQuery.of(context).size.width*0.25,
+                        height: 36,
+                        color: Colors.green,
+                        padding: const EdgeInsets.all(8),
+                        child: const Center(
+                          child: Text(
+                            'No',
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
+              ],
             ),
+          );
+        });
+        return false;
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          leading: null,
+          actions: <Widget>[
+            IconButton(
+                icon: const Icon(Icons.logout),
+                onPressed: () {
+                  //Implement logout functionality
+                  _auth.signOut();
+                  Navigator.pushNamed(context, WelcomeScreen.id);
+                }),
           ],
+          title: const Text('⚡️Group Chat'),
+          backgroundColor: Colors.lightBlueAccent,
+        ),
+        body: SafeArea(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              const MessageStream(),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  decoration: kMessageContainerDecoration,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Expanded(
+                        child: TextField(
+                          controller: messageTextController,
+                          onChanged: (value) {
+                            messageText.value = value;
+                            //Do something with the user input.
+                          },
+                          decoration: kMessageTextFieldDecoration,
+                          style: const TextStyle(color: Colors.blueGrey),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          //Implement send functionality.
+                          _firestore.collection('messages').add({
+                            'text': messageText.value,
+                            'sender': loggedInUser!.email,
+                            'time': DateTime.now(),
+                          });
+                          messageTextController.clear();
+                        },
+                        child: ValueListenableBuilder(
+                          valueListenable: messageText,
+                          builder: (context, val, child) {
+                            return Text(
+                              val=="" ? '' : 'Send',
+                              style: kSendButtonTextStyle,
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -154,6 +227,7 @@ class TextBubble extends StatelessWidget {
       child: Row(
         mainAxisAlignment:
             isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           isMe ? const SizedBox() : Padding(
             padding: const EdgeInsets.only(right: 4.0),
@@ -177,7 +251,7 @@ class TextBubble extends StatelessWidget {
                           ),
                           CircleAvatar(
                             radius: 40,
-                            backgroundColor: Colors.green[400],
+                            backgroundColor: avatarBg1,
                             child: Text(
                               name.substring(0,2),
                               style: const TextStyle(
@@ -219,7 +293,8 @@ class TextBubble extends StatelessWidget {
                 });
               },
               child: CircleAvatar(
-                backgroundColor: Colors.green[400],
+                radius: 12,
+                backgroundColor: avatarBg1,
                 child: Padding(
                   padding: const EdgeInsets.all(2.0),
                   child: Text(
@@ -273,7 +348,7 @@ class TextBubble extends StatelessWidget {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(12)
                       ),
-                      padding: EdgeInsets.all(8),
+                      padding: const EdgeInsets.all(8),
                       child: Column(
                         children: [
                           const SizedBox(
@@ -281,7 +356,7 @@ class TextBubble extends StatelessWidget {
                           ),
                           CircleAvatar(
                             radius: 40,
-                            backgroundColor: Colors.purple[300],
+                            backgroundColor: avatarBg2,
                             child: Text(
                               name.substring(0,2),
                               style: const TextStyle(
@@ -306,7 +381,8 @@ class TextBubble extends StatelessWidget {
                 });
               },
               child: CircleAvatar(
-                backgroundColor: Colors.purple[300],
+                radius: 12,
+                backgroundColor: avatarBg2,
                 child: Padding(
                   padding: const EdgeInsets.all(2.0),
                   child: Text(
