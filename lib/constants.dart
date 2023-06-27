@@ -6,7 +6,7 @@ const kSendButtonTextStyle = TextStyle(
   fontSize: 18.0,
 );
 
-const kBorderRadius = 16.0;
+const kBorderRadius = 8.0;
 
 const kMessageTextFieldDecoration = InputDecoration(
   contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
@@ -70,7 +70,8 @@ Widget text2(context, text, onTap, id) {
 }
 
 class AppColors {
-  static Color onBoarding1 = const Color(0xffBAD3C8);
-  static Color onBoarding2 = const Color(0xffFFE59E);
-  static Color onBoarding3 = const Color(0xffDC9696);
+  static Color onBoarding1 = const Color(0xFFBAD3C8);
+  static Color onBoarding2 = const Color(0xFFFFE59E);
+  static Color onBoarding3 = const Color(0xFFDC9696);
+  static Color bgColor = const Color(0xFF0D1117);
 }

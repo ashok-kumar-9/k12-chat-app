@@ -1,11 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flash_chat/components/round_button.dart';
 import 'package:flash_chat/constants.dart';
 import 'package:flash_chat/screens/chat_screen.dart';
 import 'package:flash_chat/services/error_messages.dart';
 import 'package:flutter/material.dart';
-import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+
+import '../components/reusable_widgets.dart';
 
 extension EmailValidator on String {
   bool isValidEmail() {
@@ -22,7 +23,10 @@ class RegistrationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(body: RegsiterForm());
+    return Scaffold(
+      backgroundColor: AppColors.bgColor,
+      body: const RegsiterForm(),
+    );
   }
 }
 
@@ -83,14 +87,12 @@ class _RegsiterFormState extends State<RegsiterForm> {
                   child: Hero(
                     tag: 'logo',
                     child: SizedBox(
-                      height: 200.0,
+                      height: 150.0,
                       child: Image.asset('images/logo.png'),
                     ),
                   ),
                 ),
-                const SizedBox(
-                  height: 48.0,
-                ),
+                const SizedBox(height: 48.0),
                 TextField(
                   textAlign: TextAlign.center,
                   keyboardType: TextInputType.emailAddress,
@@ -103,9 +105,7 @@ class _RegsiterFormState extends State<RegsiterForm> {
                   ),
                   controller: _controller,
                 ),
-                const SizedBox(
-                  height: 8.0,
-                ),
+                const SizedBox(height: 12.0),
                 TextField(
                   textAlign: TextAlign.center,
                   keyboardType: TextInputType.visiblePassword,
@@ -119,77 +119,88 @@ class _RegsiterFormState extends State<RegsiterForm> {
                   decoration: kTextFieldDecoration.copyWith(
                       hintText: 'Choose a Password'),
                 ),
-                const SizedBox(
-                  height: 24.0,
-                ),
-                RoundedButton(
-                  buttonColor: (password == '' ||
-                          email == null ||
-                          password == '' ||
-                          email == null ||
-                          _errorText != null)
-                      ? Colors.grey[400]!
-                      : Colors.blueAccent,
-                  textOnButton: 'Register',
-                  callBack: password == null || password == ''
-                      ? () {}
-                      : () async {
-                          setState(() {
-                            _submitted = true;
-                          });
-                          if (_errorText == null) {
-                            // print(email);
+                const SizedBox(height: 24.0),
+                ReusableWidgets().textButton(
+                    function: password == null || password == ''
+                        ? () {}
+                        : () async {
                             setState(() {
-                              _saving = true;
+                              _submitted = true;
                             });
-                            try {
-                              //final newUser =
-
-                              await _auth.createUserWithEmailAndPassword(
-                                  email: email!, password: password!);
-
-                              Navigator.pushNamed(context, ChatScreen.id);
+                            if (_errorText == null) {
+                              // print(email);
                               setState(() {
-                                _saving = false;
+                                _saving = true;
                               });
-                              Fluttertoast.showToast(
-                                msg: 'Welcome to Flash Chat',
-                                toastLength: Toast.LENGTH_LONG,
-                                gravity: ToastGravity.BOTTOM,
-                                timeInSecForIosWeb: 2,
-                                backgroundColor: Colors.white,
-                                textColor: Colors.black87,
-                                fontSize: 16.0,
-                              );
-                            } on FirebaseAuthException catch (e) {
-                              setState(() {
-                                _saving = false;
-                              });
-                              String errorMessage;
-                              errorMessage = getErrorMessage('signup', e.code);
+                              try {
+                                //final newUser =
 
-                              debugPrint(e.code);
-                              Fluttertoast.showToast(
-                                  msg: errorMessage,
+                                await _auth.createUserWithEmailAndPassword(
+                                    email: email!, password: password!);
+
+                                Navigator.pushNamed(context, ChatScreen.id);
+                                setState(() {
+                                  _saving = false;
+                                });
+                                Fluttertoast.showToast(
+                                  msg: 'Welcome to Flash Chat',
                                   toastLength: Toast.LENGTH_LONG,
                                   gravity: ToastGravity.BOTTOM,
                                   timeInSecForIosWeb: 2,
-                                  backgroundColor: Colors.black,
-                                  textColor: Colors.white,
-                                  fontSize: 16.0);
+                                  backgroundColor: Colors.white,
+                                  textColor: Colors.black87,
+                                  fontSize: 16.0,
+                                );
+                              } on FirebaseAuthException catch (e) {
+                                setState(() {
+                                  _saving = false;
+                                });
+                                String errorMessage;
+                                errorMessage =
+                                    getErrorMessage('signup', e.code);
+
+                                debugPrint(e.code);
+                                Fluttertoast.showToast(
+                                    msg: errorMessage,
+                                    toastLength: Toast.LENGTH_LONG,
+                                    gravity: ToastGravity.BOTTOM,
+                                    timeInSecForIosWeb: 2,
+                                    backgroundColor: Colors.black,
+                                    textColor: Colors.white,
+                                    fontSize: 16.0);
+                              }
+                            } else {
+                              null;
                             }
-                          } else {
-                            null;
-                          }
-                        },
-                ),
-                TextButton(
-                  child: const Text(
-                    'Already a user',
-                  ),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
+                          },
+                    buttonText: 'Register',
+                    color: (password == '' ||
+                            email == null ||
+                            password == '' ||
+                            email == null ||
+                            _errorText != null)
+                        ? Colors.grey[400]!
+                        : Colors.blueAccent,
+                    shadowColor: (password == '' ||
+                            email == null ||
+                            password == '' ||
+                            email == null ||
+                            _errorText != null)
+                        ? Colors.blueAccent
+                        : Colors.grey[400]!),
+                const SizedBox(height: 24.0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      child: const Text(
+                        'Already a user',
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ],
                 ),
               ],
             ),

@@ -1,18 +1,19 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flash_chat/components/round_button.dart';
+import 'package:flash_chat/components/reusable_widgets.dart';
 import 'package:flash_chat/constants.dart';
 import 'package:flash_chat/screens/chat_screen.dart';
 import 'package:flash_chat/screens/registration_screen.dart';
+import 'package:flash_chat/screens/reset_password.dart';
 import 'package:flash_chat/services/error_messages.dart';
 import 'package:flutter/material.dart';
-import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:flash_chat/screens/reset_password.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String id = 'login_screen';
 
   const LoginScreen({super.key});
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -20,8 +21,9 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: LoginForm(),
+    return Scaffold(
+      backgroundColor: AppColors.bgColor,
+      body: const LoginForm(),
     );
   }
 }
@@ -78,14 +80,12 @@ class _LoginFormState extends State<LoginForm> {
                   child: Hero(
                     tag: 'logo',
                     child: SizedBox(
-                      height: 200.0,
+                      height: 150.0,
                       child: Image.asset('images/logo.png'),
                     ),
                   ),
                 ),
-                const SizedBox(
-                  height: 72.0,
-                ),
+                const SizedBox(height: 48.0),
                 TextField(
                   textAlign: TextAlign.center,
                   keyboardType: TextInputType.emailAddress,
@@ -98,9 +98,7 @@ class _LoginFormState extends State<LoginForm> {
                   ),
                   controller: _controller,
                 ),
-                const SizedBox(
-                  height: 12.0,
-                ),
+                const SizedBox(height: 12.0),
                 TextField(
                   obscureText: true,
                   textAlign: TextAlign.center,
@@ -115,65 +113,72 @@ class _LoginFormState extends State<LoginForm> {
                   decoration: kTextFieldDecoration.copyWith(
                       hintText: 'Enter your password'),
                 ),
-                const SizedBox(
-                  height: 24.0,
-                ),
-                RoundedButton(
-                    buttonColor: (password == '' ||
-                            email == null ||
-                            password == '' ||
-                            email == null ||
-                            _errorText != null)
-                        ? Colors.grey[400]!
-                        : Colors.blueAccent,
-                    textOnButton: 'Login',
-                    callBack: password == null || password == ''
-                        ? () {}
-                        : () async {
+                const SizedBox(height: 24.0),
+                ReusableWidgets().textButton(
+                  function: password == null || password == ''
+                      ? () {}
+                      : () async {
+                          setState(() {
+                            _submitted = true;
+                          });
+                          if (_errorText == null) {
                             setState(() {
-                              _submitted = true;
+                              _saving = true;
                             });
-                            if (_errorText == null) {
+                            try {
+                              //var user =
+                              await _auth.signInWithEmailAndPassword(
+                                  email: email!, password: password!);
+                              Fluttertoast.showToast(
+                                msg: 'Welcome to Flash Chat',
+                                toastLength: Toast.LENGTH_LONG,
+                                gravity: ToastGravity.BOTTOM,
+                                timeInSecForIosWeb: 2,
+                                backgroundColor: Colors.white,
+                                textColor: Colors.blue[800],
+                                fontSize: 16.0,
+                              );
+                              Navigator.pushNamed(context, ChatScreen.id);
                               setState(() {
-                                _saving = true;
+                                _saving = false;
                               });
-                              try {
-                                //var user =
-                                await _auth.signInWithEmailAndPassword(
-                                    email: email!, password: password!);
-                                Fluttertoast.showToast(
-                                  msg: 'Welcome to Flash Chat',
-                                  toastLength: Toast.LENGTH_LONG,
-                                  gravity: ToastGravity.BOTTOM,
-                                  timeInSecForIosWeb: 2,
-                                  backgroundColor: Colors.white,
-                                  textColor: Colors.blue[800],
-                                  fontSize: 16.0,
-                                );
-                                Navigator.pushNamed(context, ChatScreen.id);
-                                setState(() {
-                                  _saving = false;
-                                });
-                              } on FirebaseAuthException catch (e) {
-                                setState(() {
-                                  _saving = false;
-                                });
-                                String errorMessage =
-                                    getErrorMessage('login', e.code);
+                            } on FirebaseAuthException catch (e) {
+                              setState(() {
+                                _saving = false;
+                              });
+                              String errorMessage =
+                                  getErrorMessage('login', e.code);
 
-                                //print(e.code);
-                                Fluttertoast.showToast(
-                                  msg: errorMessage,
-                                  toastLength: Toast.LENGTH_SHORT,
-                                  gravity: ToastGravity.BOTTOM,
-                                  timeInSecForIosWeb: 2,
-                                  backgroundColor: Colors.black,
-                                  textColor: Colors.white,
-                                  fontSize: 16.0,
-                                );
-                              }
+                              //print(e.code);
+                              Fluttertoast.showToast(
+                                msg: errorMessage,
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.BOTTOM,
+                                timeInSecForIosWeb: 2,
+                                backgroundColor: Colors.black,
+                                textColor: Colors.white,
+                                fontSize: 16.0,
+                              );
                             }
-                          }),
+                          }
+                        },
+                  buttonText: "Login",
+                  color: (password == '' ||
+                          email == null ||
+                          password == '' ||
+                          email == null ||
+                          _errorText != null)
+                      ? Colors.grey[400]!
+                      : Colors.blueAccent,
+                  shadowColor: (password == '' ||
+                          email == null ||
+                          password == '' ||
+                          email == null ||
+                          _errorText != null)
+                      ? Colors.blueAccent
+                      : Colors.grey[400]!,
+                ),
+                const SizedBox(height: 24.0),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
