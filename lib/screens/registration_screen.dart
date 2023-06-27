@@ -125,14 +125,17 @@ class _RegsiterFormState extends State<RegsiterForm> {
                 RoundedButton(
                   buttonColor: (password == '' ||
                           email == null ||
-                          password == '' ||
-                          email == null ||
-                          _errorText != null)
+                          password == null ||
+                          email == '')
                       ? Colors.grey[400]!
                       : Colors.blueAccent,
                   textOnButton: 'Register',
                   callBack: password == null || password == ''
-                      ? () {}
+                      ? () {
+                          setState(() {
+                            _submitted = true;
+                          });
+                        }
                       : () async {
                           setState(() {
                             _submitted = true;

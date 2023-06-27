@@ -9,15 +9,11 @@ import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flash_chat/screens/reset_password.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends StatelessWidget {
   static const String id = 'login_screen';
 
   const LoginScreen({super.key});
-  @override
-  _LoginScreenState createState() => _LoginScreenState();
-}
 
-class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
@@ -121,14 +117,17 @@ class _LoginFormState extends State<LoginForm> {
                 RoundedButton(
                     buttonColor: (password == '' ||
                             email == null ||
-                            password == '' ||
-                            email == null ||
-                            _errorText != null)
+                            password == null ||
+                            email == '')
                         ? Colors.grey[400]!
                         : Colors.blueAccent,
                     textOnButton: 'Login',
                     callBack: password == null || password == ''
-                        ? () {}
+                        ? () {
+                            setState(() {
+                              _submitted = true;
+                            });
+                          }
                         : () async {
                             setState(() {
                               _submitted = true;
