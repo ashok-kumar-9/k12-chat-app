@@ -10,7 +10,6 @@ const kBorderRadius = 8.0;
 
 var kMessageTextFieldDecoration = InputDecoration(
   contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-
   hintText: 'Type your message here...',
   hintStyle: TextStyle(
     color: Colors.grey[600],
@@ -81,10 +80,13 @@ class AppColors {
   static Color onBoarding2 = const Color(0xFFFFE59E);
   static Color onBoarding3 = const Color(0xFFDC9696);
   static Color bgColor = const Color(0xFF0D1117);
+  static Color bgColorHome = const Color(0xFF0B141A);
+  static Color appBarColor = const Color(0xFF202C33);
+  static Color sendChatColor = const Color(0xFF202C33);
+  static Color toChatColor = const Color(0xFF005C4B);
 }
 
-Color avatarBg1 = Colors.grey[350]??Colors.grey;
-Color avatarBg2 = Colors.blue;
+
 
 class Icon1 extends StatelessWidget {
   final String name;
@@ -95,7 +97,7 @@ class Icon1 extends StatelessWidget {
   Widget build(BuildContext context) {
     return CircleAvatar(
       radius: 12,
-      backgroundColor: avatarBg2,
+      backgroundColor: AppColors.sendChatColor,
       child: Padding(
         padding: const EdgeInsets.all(2.0),
         child: Text(
@@ -109,4 +111,3 @@ class Icon1 extends StatelessWidget {
     );
   }
 }
-

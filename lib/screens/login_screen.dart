@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flash_chat/components/reusable_widgets.dart';
 import 'package:flash_chat/constants.dart';
-import 'package:flash_chat/screens/chat_screen.dart';
+import 'package:flash_chat/screens/group_chat_screen.dart';
 import 'package:flash_chat/screens/registration_screen.dart';
 import 'package:flash_chat/screens/reset_password.dart';
 import 'package:flash_chat/services/error_messages.dart';
@@ -142,7 +142,7 @@ class _LoginFormState extends State<LoginForm> {
                                 textColor: Colors.blue[800],
                                 fontSize: 16.0,
                               );
-                              Navigator.pushNamed(context, ChatScreen.id);
+                              Navigator.pushNamed(context, GroupChatScreen.id);
                               setState(() {
                                 _saving = false;
                               });

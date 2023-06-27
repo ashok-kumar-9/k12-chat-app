@@ -1,5 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flash_chat/screens/chat_screen.dart';
+import 'package:flash_chat/screens/group_chat_screen.dart';
 import 'package:flash_chat/screens/login_screen.dart';
 import 'package:flash_chat/screens/onboarding/on_boarding_screen.dart';
 import 'package:flash_chat/screens/registration_screen.dart';
@@ -30,7 +30,7 @@ class FlashChat extends StatelessWidget {
       ),
       initialRoute: "on_boarding",
       routes: {
-        ChatScreen.id: (context) => const ChatScreen(),
+        GroupChatScreen.id: (context) => const GroupChatScreen(),
         LoginScreen.id: (context) => const LoginScreen(),
         RegistrationScreen.id: (context) => const RegistrationScreen(),
         ResetPasswordScreen.id: (context) => const ResetPasswordScreen(),
