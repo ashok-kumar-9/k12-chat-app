@@ -1,19 +1,22 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flash_chat/components/reusable_widgets.dart';
 import 'package:flash_chat/constants.dart';
 import 'package:flash_chat/services/error_messages.dart';
 import 'package:flutter/material.dart';
-import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
-import '../components/round_button.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 class ResetPasswordScreen extends StatelessWidget {
   const ResetPasswordScreen({super.key});
+
   static const String id = 'reset_password_screen';
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(body: ResetForm());
+    return Scaffold(
+      backgroundColor: AppColors.bgColor,
+      body: const ResetForm(),
+    );
   }
 }
 
@@ -73,14 +76,12 @@ class _ResetFormState extends State<ResetForm> {
                   child: Hero(
                     tag: 'logo',
                     child: SizedBox(
-                      height: 50.0,
+                      height: 150.0,
                       child: Image.asset('images/logo.png'),
                     ),
                   ),
                 ),
-                const SizedBox(
-                  height: 24.0,
-                ),
+                const SizedBox(height: 24.0),
                 TextField(
                   textAlign: TextAlign.center,
                   keyboardType: TextInputType.emailAddress,
@@ -93,15 +94,9 @@ class _ResetFormState extends State<ResetForm> {
                   ),
                   controller: _controller,
                 ),
-                const SizedBox(
-                  height: 12.0,
-                ),
-                RoundedButton(
-                  buttonColor: (email == null || email == '')
-                      ? Colors.grey[400]!
-                      : Colors.blueAccent,
-                  textOnButton: 'Receive reset link on your email',
-                  callBack: _errorText != null
+                const SizedBox(height: 24.0),
+                ReusableWidgets().textButton(
+                  function: _errorText != null
                       ? () {
                           setState(() {
                             _submitted = true;
@@ -152,6 +147,13 @@ class _ResetFormState extends State<ResetForm> {
                             null;
                           }
                         },
+                  buttonText: 'Receive reset link on your email',
+                  color: (email == null || email == '')
+                      ? Colors.grey[400]!
+                      : Colors.blueAccent,
+                  shadowColor: (email == null || email == '')
+                      ? Colors.blueAccent
+                      : Colors.grey[400]!,
                 ),
               ],
             ),
