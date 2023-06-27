@@ -116,7 +116,11 @@ class _LoginFormState extends State<LoginForm> {
                 const SizedBox(height: 24.0),
                 ReusableWidgets().textButton(
                   function: password == null || password == ''
-                      ? () {}
+                      ? () {
+                          setState(() {
+                            _submitted = true;
+                          });
+                        }
                       : () async {
                           setState(() {
                             _submitted = true;
@@ -165,16 +169,14 @@ class _LoginFormState extends State<LoginForm> {
                   buttonText: "Login",
                   color: (password == '' ||
                           email == null ||
-                          password == '' ||
-                          email == null ||
-                          _errorText != null)
+                          password == null ||
+                          email == '')
                       ? Colors.grey[400]!
                       : Colors.blueAccent,
                   shadowColor: (password == '' ||
                           email == null ||
-                          password == '' ||
-                          email == null ||
-                          _errorText != null)
+                          password == null ||
+                          email == '')
                       ? Colors.blueAccent
                       : Colors.grey[400]!,
                 ),
