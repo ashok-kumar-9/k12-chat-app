@@ -39,6 +39,7 @@ class _RegsiterFormState extends State<RegsiterForm> {
   String? email;
   String? password;
   bool _saving = false;
+  bool _submitted = false;
 
   String? get _errorText {
     // at any time, we can get the text from _controller.value.text
@@ -58,8 +59,6 @@ class _RegsiterFormState extends State<RegsiterForm> {
     // return null if the text is valid
     return null;
   }
-
-  bool _submitted = false;
 
   @override
   void dispose() {
@@ -114,7 +113,6 @@ class _RegsiterFormState extends State<RegsiterForm> {
                     //Do something with the user input.
                     setState(() {
                       password = value;
-                      debugPrint(password);
                     });
                   },
                   style: kTextInputStyle,
