@@ -8,16 +8,23 @@ const kSendButtonTextStyle = TextStyle(
 
 const kBorderRadius = 8.0;
 
-const kMessageTextFieldDecoration = InputDecoration(
-  contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+var kMessageTextFieldDecoration = InputDecoration(
+  contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+
   hintText: 'Type your message here...',
+  hintStyle: TextStyle(
+    color: Colors.grey[600],
+  ),
   border: InputBorder.none,
 );
 
-const kMessageContainerDecoration = BoxDecoration(
-  border: Border(
-    top: BorderSide(color: Colors.lightBlueAccent, width: 2.0),
+var kMessageContainerDecoration = BoxDecoration(
+  border: Border.all(
+    color: Colors.blue,
+    width: 1,
   ),
+  borderRadius: BorderRadius.circular(24),
+  color: Colors.grey[200],
 );
 
 var kTextFieldDecoration = InputDecoration(
@@ -75,3 +82,31 @@ class AppColors {
   static Color onBoarding3 = const Color(0xFFDC9696);
   static Color bgColor = const Color(0xFF0D1117);
 }
+
+Color avatarBg1 = Colors.grey[350]??Colors.grey;
+Color avatarBg2 = Colors.blue;
+
+class Icon1 extends StatelessWidget {
+  final String name;
+
+  const Icon1({super.key, required this.name});
+
+  @override
+  Widget build(BuildContext context) {
+    return CircleAvatar(
+      radius: 12,
+      backgroundColor: avatarBg2,
+      child: Padding(
+        padding: const EdgeInsets.all(2.0),
+        child: Text(
+          name,
+          style: const TextStyle(
+            fontSize: 12.0,
+            color: Colors.white,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
