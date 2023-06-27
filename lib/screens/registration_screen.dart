@@ -87,7 +87,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               TextField(
                 textAlign: TextAlign.center,
                 keyboardType: TextInputType.emailAddress,
-                onChanged: (_) => setState(() {}),
+                onChanged: (value) => setState(() {
+                  email = value;
+                }),
                 style: kTextInputStyle,
                 decoration:
                     kTextFieldDecoration.copyWith(errorText: _errorText),
@@ -167,6 +169,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           errorMessage =
                               "Email already registered. Try loggin in";
                           break;
+                        case 'weak-password':
+                          errorMessage =
+                              "Password should be atleast 6 characters long";
                         default:
                           errorMessage = "An undefined Error happened.";
                       }
