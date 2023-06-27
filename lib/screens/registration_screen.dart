@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flash_chat/constants.dart';
-import 'package:flash_chat/screens/chat_screen.dart';
+import 'package:flash_chat/screens/group_chat_screen.dart';
 import 'package:flash_chat/services/error_messages.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -142,7 +142,7 @@ class _RegsiterFormState extends State<RegsiterForm> {
                                 await _auth.createUserWithEmailAndPassword(
                                     email: email!, password: password!);
 
-                                Navigator.pushNamed(context, ChatScreen.id);
+                                Navigator.pushNamed(context, GroupChatScreen.id);
                                 setState(() {
                                   _saving = false;
                                 });

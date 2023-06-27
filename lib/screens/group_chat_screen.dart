@@ -8,16 +8,16 @@ import 'package:flutter/services.dart';
 final _firestore = FirebaseFirestore.instance;
 User? loggedInUser;
 
-class ChatScreen extends StatefulWidget {
+class GroupChatScreen extends StatefulWidget {
   static const String id = 'chat_screen';
 
-  const ChatScreen({super.key});
+  const GroupChatScreen({super.key});
 
   @override
-  _ChatScreenState createState() => _ChatScreenState();
+  _GroupChatScreenState createState() => _GroupChatScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen> {
+class _GroupChatScreenState extends State<GroupChatScreen> {
   final messageTextController = TextEditingController();
   ValueNotifier<String> messageText = ValueNotifier('');
   final _auth = FirebaseAuth.instance;
@@ -104,7 +104,7 @@ class _ChatScreenState extends State<ChatScreen> {
         return false;
       },
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.bgColorHome,
         appBar: AppBar(
           automaticallyImplyLeading: false,
           leading: null,
@@ -119,7 +119,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 }),
           ],
           title: const Text('⚡️Group Chat'),
-          backgroundColor: Colors.lightBlueAccent,
+          backgroundColor: AppColors.appBarColor,
         ),
         body: SafeArea(
           child: Column(
@@ -166,7 +166,7 @@ class _ChatScreenState extends State<ChatScreen> {
                             builder: (context, val, child) {
                               return CircleAvatar(
                                 backgroundColor:
-                                    val == "" ? Colors.blue[200] : Colors.blue,
+                                    val == "" ? AppColors.toChatColor.withOpacity(0.5) : AppColors.toChatColor,
                                 radius: 20,
                                 child: const Padding(
                                   padding: EdgeInsets.only(left: 4.0),
@@ -211,6 +211,7 @@ class MessageStream extends StatelessWidget {
           return Expanded(
             child: ListView(
               reverse: true,
+              physics: const BouncingScrollPhysics(),
               children: messageWidget,
             ),
           );
@@ -244,113 +245,108 @@ class TextBubble extends StatelessWidget {
             isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          isMe
-              ? const SizedBox()
-              : Padding(
-                  padding: const EdgeInsets.only(right: 4.0),
-                  child: InkWell(
-                    onTap: () {
-                      showDialog(
-                          context: context,
-                          builder: (context) {
-                            return Dialog(
-                              elevation: 16,
-                              backgroundColor: Colors.transparent,
-                              child: Container(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.25,
-                                decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(20)),
-                                padding: const EdgeInsets.all(8),
-                                child: Column(
-                                  children: [
-                                    const SizedBox(
-                                      height: 16,
+          if (!isMe)
+            Padding(
+              padding: const EdgeInsets.only(right: 4.0),
+              child: InkWell(
+                onTap: () {
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return Dialog(
+                          elevation: 16,
+                          backgroundColor: Colors.transparent,
+                          child: Container(
+                            height: MediaQuery.of(context).size.height * 0.25,
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20)),
+                            padding: const EdgeInsets.all(8),
+                            child: Column(
+                              children: [
+                                const SizedBox(height: 16),
+                                CircleAvatar(
+                                  radius: 40,
+                                  backgroundColor: AppColors.sendChatColor,
+                                  child: Text(
+                                    name.substring(0, 2),
+                                    style: const TextStyle(
+                                      color: Colors.white,
                                     ),
-                                    CircleAvatar(
-                                      radius: 40,
-                                      backgroundColor: avatarBg1,
-                                      child: Text(
-                                        name.substring(0, 2),
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: 32,
-                                    ),
-                                    Text(
-                                      it['sender'],
-                                      style: const TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 20,
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: 20,
-                                    ),
-                                    InkWell(
-                                      onTap: () {
-                                        Navigator.pop(context);
-                                        Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                                builder: (context) {
-                                          return PersonalChatScreen(
-                                              receiverId: it['sender']);
-                                        }));
-                                      },
-                                      child: const Text(
-                                        'Tap to chat',
-                                        style: TextStyle(
-                                          color: Colors.blue,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                                  ),
                                 ),
-                              ),
-                            );
-                          });
-                    },
-                    child: CircleAvatar(
-                      radius: 12,
-                      backgroundColor: avatarBg1,
-                      child: Padding(
-                        padding: const EdgeInsets.all(2.0),
-                        child: Text(
-                          name,
-                          style: const TextStyle(
-                            fontSize: 12.0,
-                            color: Colors.white,
+                                const SizedBox(
+                                  height: 32,
+                                ),
+                                Text(
+                                  it['sender'],
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 20,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                InkWell(
+                                  onTap: () {
+                                    Navigator.pop(context);
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(builder: (context) {
+                                      return PersonalChatScreen(
+                                          receiverId: it['sender']);
+                                    }));
+                                  },
+                                  child: const Text(
+                                    'Tap to chat',
+                                    style: TextStyle(
+                                      color: Colors.blue,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
+                        );
+                      });
+                },
+                child: CircleAvatar(
+                  radius: 15,
+                  backgroundColor: AppColors.sendChatColor,
+                  child: Padding(
+                    padding: const EdgeInsets.all(2.0),
+                    child: Text(
+                      name,
+                      style: const TextStyle(
+                        fontSize: 12.0,
+                        color: Colors.white,
                       ),
                     ),
                   ),
                 ),
+              ),
+            ),
           Flexible(
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.only(
                     topLeft: isMe
-                        ? const Radius.circular(30)
+                        ? const Radius.circular(16)
                         : const Radius.circular(0),
                     topRight: isMe
                         ? const Radius.circular(0)
-                        : const Radius.circular(30),
-                    bottomLeft: const Radius.circular(30),
-                    bottomRight: const Radius.circular(30)),
-                color: isMe ? Colors.lightBlue : Colors.grey[300],
+                        : const Radius.circular(16),
+                    bottomLeft: const Radius.circular(16),
+                    bottomRight: const Radius.circular(16)),
+                color: isMe ? AppColors.toChatColor : AppColors.sendChatColor,
               ),
               // elevation: 5,
               child: Padding(
                 padding: const EdgeInsets.all(15.0),
                 child: Text(
                   '${it['text']}',
-                  style: TextStyle(
-                    color: isMe ? Colors.white : Colors.black,
+                  style: const TextStyle(
+                    color: Colors.white,
                     fontSize: 15.0,
                     overflow: TextOverflow.visible,
                   ),
@@ -359,60 +355,6 @@ class TextBubble extends StatelessWidget {
               ),
             ),
           ),
-          isMe
-              ? Padding(
-                  padding: const EdgeInsets.only(left: 4.0),
-                  child: InkWell(
-                    onTap: () {
-                      showDialog(
-                          context: context,
-                          builder: (context) {
-                            return Dialog(
-                              elevation: 16,
-                              child: Container(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.2,
-                                decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(12)),
-                                padding: const EdgeInsets.all(8),
-                                child: Column(
-                                  children: [
-                                    const SizedBox(
-                                      height: 16,
-                                    ),
-                                    CircleAvatar(
-                                      radius: 40,
-                                      backgroundColor: avatarBg2,
-                                      child: Text(
-                                        name.substring(0, 2),
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: 32,
-                                    ),
-                                    Text(
-                                      it['sender'],
-                                      style: const TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 20,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          });
-                    },
-                    child: Icon1(
-                      name: name,
-                    ),
-                  ),
-                )
-              : const SizedBox(),
         ],
       ),
     );
