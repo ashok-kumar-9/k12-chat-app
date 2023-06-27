@@ -19,14 +19,14 @@ const kMessageContainerDecoration = BoxDecoration(
 );
 
 var kTextFieldDecoration = InputDecoration(
-  hintText: 'Enter your email',
-  hintStyle: TextStyle(
-    color: Colors.grey[400],
-    fontSize: 16,
-  ),
-  contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-  border: InputBorder.none
-);
+    hintText: 'Enter your email',
+    hintStyle: TextStyle(
+      color: Colors.grey[400],
+      fontSize: 16,
+    ),
+    contentPadding:
+        const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+    border: InputBorder.none);
 
 const kTextInputStyle = TextStyle(
   color: Colors.black,
@@ -41,4 +41,10 @@ Widget text2(context, text, onTap, id) {
       Navigator.pushNamed(context, id);
     },
   );
+}
+
+class AppColors {
+  static Color onBoarding1 = const Color(0xffBAD3C8);
+  static Color onBoarding2 = const Color(0xffFFE59E);
+  static Color onBoarding3 = const Color(0xffDC9696);
 }

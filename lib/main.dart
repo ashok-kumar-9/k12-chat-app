@@ -1,10 +1,11 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flash_chat/screens/chat_screen.dart';
 import 'package:flash_chat/screens/login_screen.dart';
+import 'package:flash_chat/screens/onboarding/on_boarding_screen.dart';
 import 'package:flash_chat/screens/registration_screen.dart';
 import 'package:flash_chat/screens/splash_screen.dart';
-import 'package:flash_chat/dump/welcome_screen.dart';
 import 'package:flutter/material.dart';
+
 import 'screens/reset_password.dart';
 
 void main() async {
@@ -28,13 +29,14 @@ class FlashChat extends StatelessWidget {
           bodySmall: TextStyle(color: Colors.black54),
         ),
       ),
-      initialRoute: "splash",
+      initialRoute: "on_boarding",
       routes: {
         ChatScreen.id: (context) => const ChatScreen(),
         LoginScreen.id: (context) => const LoginScreen(),
         RegistrationScreen.id: (context) => const RegistrationScreen(),
         ResetPasswordScreen.id: (context) => const ResetPasswordScreen(),
-        'splash': (context) => const SplashScreen()
+        'splash': (context) => const SplashScreen(),
+        'on_boarding': (context) => const OnBoardingScreen()
       },
     );
   }
