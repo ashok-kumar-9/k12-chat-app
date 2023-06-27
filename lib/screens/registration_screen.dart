@@ -112,7 +112,10 @@ class _RegsiterFormState extends State<RegsiterForm> {
                   keyboardType: TextInputType.visiblePassword,
                   onChanged: (value) {
                     //Do something with the user input.
-                    password = value;
+                    setState(() {
+                      password = value;
+                      debugPrint(password);
+                    });
                   },
                   style: kTextInputStyle,
                   decoration: kTextFieldDecoration.copyWith(
@@ -122,58 +125,65 @@ class _RegsiterFormState extends State<RegsiterForm> {
                   height: 24.0,
                 ),
                 RoundedButton(
-                  buttonColor: (password == null)
+                  buttonColor: (password == '' ||
+                          email == null ||
+                          password == '' ||
+                          email == null ||
+                          _errorText != null)
                       ? Colors.grey[400]!
                       : Colors.blueAccent,
                   textOnButton: 'Register',
-                  callBack: () async {
-                    setState(() {
-                      _submitted = true;
-                    });
-                    if (_errorText == null) {
-                      // print(email);
-                      setState(() {
-                        _saving = true;
-                      });
-                      try {
-                        final newUser =
-                            await _auth.createUserWithEmailAndPassword(
-                                email: email!, password: password!);
+                  callBack: password == null || password == ''
+                      ? () {}
+                      : () async {
+                          setState(() {
+                            _submitted = true;
+                          });
+                          if (_errorText == null) {
+                            // print(email);
+                            setState(() {
+                              _saving = true;
+                            });
+                            try {
+                              //final newUser =
 
-                        Navigator.pushNamed(context, ChatScreen.id);
-                        setState(() {
-                          _saving = false;
-                        });
-                        Fluttertoast.showToast(
-                          msg: 'Welcome to Flash Chat',
-                          toastLength: Toast.LENGTH_LONG,
-                          gravity: ToastGravity.BOTTOM,
-                          timeInSecForIosWeb: 2,
-                          backgroundColor: Colors.white,
-                          textColor: Colors.black87,
-                          fontSize: 16.0,
-                        );
-                      } on FirebaseAuthException catch (e) {
-                        setState(() {
-                          _saving = false;
-                        });
-                        String errorMessage;
-                        errorMessage = getErrorMessage('signup', e.code);
+                              await _auth.createUserWithEmailAndPassword(
+                                  email: email!, password: password!);
 
-                        debugPrint(e.code);
-                        Fluttertoast.showToast(
-                            msg: errorMessage,
-                            toastLength: Toast.LENGTH_LONG,
-                            gravity: ToastGravity.BOTTOM,
-                            timeInSecForIosWeb: 2,
-                            backgroundColor: Colors.red[400],
-                            textColor: Colors.white,
-                            fontSize: 16.0);
-                      }
-                    } else {
-                      null;
-                    }
-                  },
+                              Navigator.pushNamed(context, ChatScreen.id);
+                              setState(() {
+                                _saving = false;
+                              });
+                              Fluttertoast.showToast(
+                                msg: 'Welcome to Flash Chat',
+                                toastLength: Toast.LENGTH_LONG,
+                                gravity: ToastGravity.BOTTOM,
+                                timeInSecForIosWeb: 2,
+                                backgroundColor: Colors.white,
+                                textColor: Colors.black87,
+                                fontSize: 16.0,
+                              );
+                            } on FirebaseAuthException catch (e) {
+                              setState(() {
+                                _saving = false;
+                              });
+                              String errorMessage;
+                              errorMessage = getErrorMessage('signup', e.code);
+
+                              debugPrint(e.code);
+                              Fluttertoast.showToast(
+                                  msg: errorMessage,
+                                  toastLength: Toast.LENGTH_LONG,
+                                  gravity: ToastGravity.BOTTOM,
+                                  timeInSecForIosWeb: 2,
+                                  backgroundColor: Colors.black,
+                                  textColor: Colors.white,
+                                  fontSize: 16.0);
+                            }
+                          } else {
+                            null;
+                          }
+                        },
                 ),
                 TextButton(
                   child: const Text(
