@@ -1,22 +1,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flash_chat/constants.dart';
-import 'package:flash_chat/screens/personal_chat_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flash_chat/dump/welcome_screen.dart';
 
 final _firestore = FirebaseFirestore.instance;
 User? loggedInUser;
 
-class ChatScreen extends StatefulWidget {
-  static const String id = 'chat_screen';
+class PersonalChatScreen extends StatefulWidget {
 
-  const ChatScreen({super.key});
+  static const String id = 'chat_screen';
+  final String receiverId;
+
+  const PersonalChatScreen({super.key, required this.receiverId});
   @override
-  _ChatScreenState createState() => _ChatScreenState();
+  _PersonalChatScreenState createState() => _PersonalChatScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen> {
+class _PersonalChatScreenState extends State<PersonalChatScreen> {
   final messageTextController = TextEditingController();
   String? messageText;
   final _auth = FirebaseAuth.instance;
@@ -36,6 +37,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     super.initState();
+    debugPrint(widget.receiverId);
     getCurrentUser();
   }
 
@@ -45,16 +47,9 @@ class _ChatScreenState extends State<ChatScreen> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         leading: null,
-        actions: <Widget>[
-          IconButton(
-              icon: const Icon(Icons.close),
-              onPressed: () {
-                //Implement logout functionality
-                _auth.signOut();
-                Navigator.pushNamed(context, WelcomeScreen.id);
-              }),
-        ],
-        title: const Text('⚡️Group Chat'),
+        title: Text(
+          widget.receiverId,
+        ),
         backgroundColor: Colors.lightBlueAccent,
       ),
       body: SafeArea(
@@ -62,7 +57,7 @@ class _ChatScreenState extends State<ChatScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            const MessageStream(),
+            MessageStream(receiver: widget.receiverId),
             Container(
               decoration: kMessageContainerDecoration,
               child: Row(
@@ -82,9 +77,10 @@ class _ChatScreenState extends State<ChatScreen> {
                   TextButton(
                     onPressed: () {
                       //Implement send functionality.
-                      _firestore.collection('messages').add({
-                        'text': messageText,
+                      _firestore.collection('personal').add({
                         'sender': loggedInUser!.email,
+                        'receiver': widget.receiverId,
+                        'text': messageText,
                         'time': DateTime.now(),
                       });
                       messageTextController.clear();
@@ -105,12 +101,13 @@ class _ChatScreenState extends State<ChatScreen> {
 }
 
 class MessageStream extends StatelessWidget {
-  const MessageStream({Key? key}) : super(key: key);
+  final String receiver;
+  const MessageStream({Key? key, required this.receiver}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: _firestore.collection('messages').orderBy('time').snapshots(),
+      stream: _firestore.collection('personal').orderBy('time').snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return Expanded(
@@ -119,7 +116,14 @@ class MessageStream extends StatelessWidget {
             ),
           );
         }
-        var messages = snapshot.data!.docs.reversed;
+
+        var ml=snapshot.data!.docs.where((element) {
+          if(element['receiver']==receiver || element['sender']==receiver) {
+            return true;
+          }
+          return false;
+        });
+        var messages = ml.toList().reversed; //snapshot.data!.docs.reversed;
 
         List<TextBubble> messageWidget = [];
         for (var it in messages) {
@@ -153,7 +157,7 @@ class TextBubble extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: Row(
         mainAxisAlignment:
-            isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+        isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
         children: [
           isMe ? const SizedBox() : Padding(
             padding: const EdgeInsets.only(right: 4.0),
@@ -164,12 +168,12 @@ class TextBubble extends StatelessWidget {
                     elevation: 16,
                     backgroundColor: Colors.transparent,
                     child: Container(
-                      height: MediaQuery.of(context).size.height*0.25,
+                      height: MediaQuery.of(context).size.height*0.2,
                       decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.circular(20)
+                          borderRadius: BorderRadius.circular(12)
                       ),
-                      padding: const EdgeInsets.all(8),
+                      padding: EdgeInsets.all(8),
                       child: Column(
                         children: [
                           const SizedBox(
@@ -193,23 +197,6 @@ class TextBubble extends StatelessWidget {
                             style: const TextStyle(
                               color: Colors.black,
                               fontSize: 20,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          InkWell(
-                            onTap: () {
-                              Navigator.pop(context);
-                              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                                return PersonalChatScreen(receiverId: it['sender']);
-                              }));
-                            },
-                            child: const Text(
-                              'Tap to chat',
-                              style: TextStyle(
-                                color: Colors.blue,
-                              ),
                             ),
                           ),
                         ],
@@ -245,7 +232,7 @@ class TextBubble extends StatelessWidget {
                     bottomRight: const Radius.circular(30)),
                 color: isMe ? Colors.lightBlue : Colors.grey[300],
               ),
-             // elevation: 5,
+              // elevation: 5,
               child: Padding(
                 padding: const EdgeInsets.all(15.0),
                 child: Text(
@@ -267,11 +254,12 @@ class TextBubble extends StatelessWidget {
                 showDialog(context: context, builder: (context) {
                   return Dialog(
                     elevation: 16,
+                    backgroundColor: Colors.transparent,
                     child: Container(
                       height: MediaQuery.of(context).size.height*0.2,
                       decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12)
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12)
                       ),
                       padding: EdgeInsets.all(8),
                       child: Column(

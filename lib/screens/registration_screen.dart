@@ -26,7 +26,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         leading: const BackButton(),
         title: const Text('Sign Up'),
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.black,
       body: ModalProgressHUD(
         inAsyncCall: _saving,
         child: Padding(
@@ -146,7 +146,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               ),
               TextButton(
                 child: const Text(
-                  'Already a user',
+                  'Already a user? Log In',
                 ),
                 onPressed: () {
                   Navigator.pop(context);
