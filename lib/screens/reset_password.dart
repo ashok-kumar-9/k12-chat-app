@@ -1,144 +1,164 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flash_chat/constants.dart';
+import 'package:flash_chat/services/error_messages.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-class ResetPasswordScreen extends StatefulWidget {
+import '../components/round_button.dart';
+
+class ResetPasswordScreen extends StatelessWidget {
   const ResetPasswordScreen({super.key});
   static const String id = 'reset_password_screen';
 
   @override
-  State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
+  Widget build(BuildContext context) {
+    return const Scaffold(body: ResetForm());
+  }
 }
 
-class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
+class ResetForm extends StatefulWidget {
+  const ResetForm({super.key});
+
+  @override
+  State<ResetForm> createState() => _ResetFormState();
+}
+
+class _ResetFormState extends State<ResetForm> {
+  final _controller = TextEditingController();
   String? email;
-  String? password;
+
   final FirebaseAuth _auth = FirebaseAuth.instance;
   bool _saving = false;
+  bool _submitted = false;
+
+  String? get _errorText {
+    // at any time, we can get the text from _controller.value.text
+    final text = _controller.value.text;
+    // Note: you can do your own custom validation here
+    // Move this logic this outside the widget for more testable code
+    if (text.isEmpty) {
+      return 'Can\'t be empty';
+    }
+    if (text.length < 4) {
+      return 'Too short';
+    }
+    if (text.isEmpty ||
+        !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(text)) {
+      return "Enter valid email address";
+    }
+    // return null if the text is valid
+    return null;
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Reset Password'),
-      ),
-      backgroundColor: Colors.white,
-      body: ModalProgressHUD(
-        inAsyncCall: _saving,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Flexible(
-                child: Hero(
-                  tag: 'logo',
-                  child: SizedBox(
-                    height: 50.0,
-                    child: Image.asset('images/logo.png'),
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 24.0,
-              ),
-              TextField(
-                textAlign: TextAlign.center,
-                keyboardType: TextInputType.emailAddress,
-                onChanged: (value) {
-                  email = value;
-                },
-                style: const TextStyle(
-                  color: Colors.black,
-                ),
-                decoration: kTextFieldDecoration,
-              ),
-              const SizedBox(
-                height: 12.0,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16.0),
-                child: Material(
-                  color: Colors.lightBlueAccent,
-                  borderRadius: const BorderRadius.all(Radius.circular(30.0)),
-                  elevation: 5.0,
-                  child: MaterialButton(
-                    onPressed: () async {
-                      setState(() {
-                        _saving = true;
-                      });
-                      try {
-                        await _auth.sendPasswordResetEmail(email: email!);
-                        setState(() {
-                          _saving = false;
-                        });
-                        Fluttertoast.showToast(
-                          msg: 'Reset link sent to your email.',
-                          toastLength: Toast.LENGTH_LONG,
-                          gravity: ToastGravity.CENTER,
-                          timeInSecForIosWeb: 2,
-                          backgroundColor: Colors.red,
-                          textColor: Colors.blue,
-                          fontSize: 16.0,
-                        );
-                        Navigator.pop(context);
-                      } on FirebaseAuthException catch (e) {
-                        setState(() {
-                          _saving = false;
-                        });
-                        String errorMessage;
-                        switch (e.code) {
-                          case "invalid-email":
-                            errorMessage = "Enter a valid email address";
-                            break;
-                          case "wrong-password":
-                            errorMessage = "Your password is wrong.";
-                            break;
-                          case "user-not-found":
-                            errorMessage = "Email isn't registered";
-                            break;
-                          case "user-disabled":
-                            errorMessage =
-                                "User with this email has been disabled.";
-                            break;
-                          case "too-many-requests":
-                            errorMessage =
-                                "Too many requests. Try again later.";
-                            break;
-                          case "operaetion-not-allowed":
-                            errorMessage =
-                                "Signing in with Email and Password is not enabled.";
-                            break;
-                          default:
-                            errorMessage = "An undefined Error happened.";
-                        }
-                        //print(e.code);
-                        Fluttertoast.showToast(
-                          msg: errorMessage,
-                          toastLength: Toast.LENGTH_LONG,
-                          gravity: ToastGravity.CENTER,
-                          timeInSecForIosWeb: 2,
-                          backgroundColor: Colors.red,
-                          textColor: Colors.blue,
-                          fontSize: 16.0,
-                        );
-                      }
-                    },
-                    minWidth: 200.0,
-                    height: 42.0,
-                    child: const Text(
-                      'Recieve Reset Link',
+    return ValueListenableBuilder(
+      builder: (context, value, __) {
+        return ModalProgressHUD(
+          inAsyncCall: _saving,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Flexible(
+                  child: Hero(
+                    tag: 'logo',
+                    child: SizedBox(
+                      height: 50.0,
+                      child: Image.asset('images/logo.png'),
                     ),
                   ),
                 ),
-              ),
-            ],
+                const SizedBox(
+                  height: 24.0,
+                ),
+                TextField(
+                  textAlign: TextAlign.center,
+                  keyboardType: TextInputType.emailAddress,
+                  onChanged: (value) {
+                    email = value;
+                  },
+                  style: kTextInputStyle,
+                  decoration: kTextFieldDecoration.copyWith(
+                    errorText: _submitted ? _errorText : null,
+                  ),
+                  controller: _controller,
+                ),
+                const SizedBox(
+                  height: 12.0,
+                ),
+                RoundedButton(
+                  buttonColor: (email == null || email == '')
+                      ? Colors.grey[400]!
+                      : Colors.blueAccent,
+                  textOnButton: 'Receive reset link on your email',
+                  callBack: _errorText != null
+                      ? () {
+                          setState(() {
+                            _submitted = true;
+                          });
+                        }
+                      : () async {
+                          setState(() {
+                            _submitted = true;
+                          });
+                          if (_errorText == null) {
+                            setState(() {
+                              _saving = true;
+                            });
+                            try {
+                              await _auth.sendPasswordResetEmail(email: email!);
+                              setState(() {
+                                _saving = false;
+                              });
+                              Fluttertoast.showToast(
+                                msg: 'Reset link sent to your email.',
+                                toastLength: Toast.LENGTH_LONG,
+                                gravity: ToastGravity.CENTER,
+                                timeInSecForIosWeb: 2,
+                                backgroundColor: Colors.black,
+                                textColor: Colors.white,
+                                fontSize: 16.0,
+                              );
+                              Navigator.pop(context);
+                            } on FirebaseAuthException catch (e) {
+                              setState(() {
+                                _saving = false;
+                              });
+                              String errorMessage =
+                                  getErrorMessage('reset', e.code);
+
+                              //print(e.code);
+                              Fluttertoast.showToast(
+                                msg: errorMessage,
+                                toastLength: Toast.LENGTH_LONG,
+                                gravity: ToastGravity.CENTER,
+                                timeInSecForIosWeb: 2,
+                                backgroundColor: Colors.red,
+                                textColor: Colors.blue,
+                                fontSize: 16.0,
+                              );
+                            }
+                          } else {
+                            null;
+                          }
+                        },
+                ),
+              ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
+      valueListenable: _controller,
     );
   }
 }
