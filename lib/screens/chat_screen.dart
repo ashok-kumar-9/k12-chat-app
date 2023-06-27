@@ -145,24 +145,37 @@ class _ChatScreenState extends State<ChatScreen> {
                           style: const TextStyle(color: Colors.blueGrey),
                         ),
                       ),
-                      TextButton(
-                        onPressed: () {
-                          //Implement send functionality.
-                          _firestore.collection('messages').add({
-                            'text': messageText.value,
-                            'sender': loggedInUser!.email,
-                            'time': DateTime.now(),
-                          });
-                          messageTextController.clear();
-                        },
-                        child: ValueListenableBuilder(
-                          valueListenable: messageText,
-                          builder: (context, val, child) {
-                            return Text(
-                              val=="" ? '' : 'Send',
-                              style: kSendButtonTextStyle,
-                            );
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: InkWell(
+                          onTap: () {
+                            if(messageText.value=='') {
+
+                            }
+                            else {
+                              //Implement send functionality.
+                              _firestore.collection('messages').add({
+                                'text': messageText.value,
+                                'sender': loggedInUser!.email,
+                                'time': DateTime.now(),
+                              });
+                              messageTextController.clear();
+                              messageText.value="";
+                            }
                           },
+                          child: ValueListenableBuilder(
+                            valueListenable: messageText,
+                            builder: (context, val, child) {
+                              return CircleAvatar(
+                                backgroundColor: val=="" ?  Colors.blue[200] : Colors.blue,
+                                radius: 20,
+                                child: const Padding(
+                                  padding: EdgeInsets.only(left: 4.0),
+                                  child: Icon(Icons.send, color: Colors.white, size: 18),
+                                ),
+                              );
+                            },
+                          ),
                         ),
                       ),
                     ],
@@ -380,20 +393,7 @@ class TextBubble extends StatelessWidget {
                   );
                 });
               },
-              child: CircleAvatar(
-                radius: 12,
-                backgroundColor: avatarBg2,
-                child: Padding(
-                  padding: const EdgeInsets.all(2.0),
-                  child: Text(
-                    name,
-                    style: const TextStyle(
-                      fontSize: 12.0,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ),
+              child: Icon1(name: name,),
             ),
           ) : const SizedBox(),
         ],

@@ -75,26 +75,32 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
                         style: const TextStyle(color: Colors.blueGrey),
                       ),
                     ),
-                    TextButton(
-                      onPressed: () {
-                        if(messageText=="") {
+                    InkWell(
+                      onTap: () {
+                        if(messageText.value=='') {
 
                         }
-                        //Implement send functionality.
-                        _firestore.collection('personal').add({
-                          'sender': loggedInUser!.email,
-                          'receiver': widget.receiverId,
-                          'text': messageText,
-                          'time': DateTime.now(),
-                        });
-                        messageTextController.clear();
+                        else {
+                            _firestore.collection('personal').add({
+                              'sender': loggedInUser!.email,
+                              'receiver': widget.receiverId,
+                              'text': messageText,
+                              'time': DateTime.now(),
+                            });
+                            messageTextController.clear();
+                          messageText.value="";
+                        }
                       },
                       child: ValueListenableBuilder(
                         valueListenable: messageText,
                         builder: (context, val, child) {
-                          return Text(
-                            val=="" ? '' : 'Send',
-                            style: kSendButtonTextStyle,
+                          return CircleAvatar(
+                            backgroundColor: val=="" ?  Colors.blue[200] : Colors.blue,
+                            radius: 20,
+                            child: const Padding(
+                              padding: EdgeInsets.only(left: 4.0),
+                              child: Icon(Icons.send, color: Colors.white, size: 18),
+                            ),
                           );
                         },
                       ),
