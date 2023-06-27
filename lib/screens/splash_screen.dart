@@ -1,3 +1,4 @@
+import 'package:flash_chat/constants.dart';
 import 'package:flash_chat/dump/welcome_screen.dart';
 import 'package:flash_chat/screens/login_screen.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +27,7 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
+      backgroundColor: AppColors.bgColor,
       body: Center(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
