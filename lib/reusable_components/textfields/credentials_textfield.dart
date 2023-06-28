@@ -1,7 +1,7 @@
 import 'package:flash_chat/services/email_validation.dart';
 import 'package:flutter/material.dart';
 
-import '../../constants.dart';
+import '../../utils/constants.dart';
 
 class CredentialsTextField extends StatelessWidget {
 

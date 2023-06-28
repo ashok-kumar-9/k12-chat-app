@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flash_chat/constants.dart';
+import 'package:flash_chat/utils/constants.dart';
 import 'package:flash_chat/reusable_components/bottom_sheets/warning_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 

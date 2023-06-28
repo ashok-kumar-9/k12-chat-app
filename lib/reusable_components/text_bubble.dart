@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:flutter/material.dart';
 
-import '../constants.dart';
+import '../utils/constants.dart';
 import '../screens/personal_chat_screen.dart';
 
 class TextBubble extends StatelessWidget {

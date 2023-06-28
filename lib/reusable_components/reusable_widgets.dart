@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ReusableWidgets {
-  GestureDetector textButton(
+  GestureDetector customButton(
       {required Function() onTap,
       required String buttonText,
       Color color = Colors.black,

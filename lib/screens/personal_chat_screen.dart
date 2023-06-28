@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flash_chat/constants.dart';
+import 'package:flash_chat/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 import '../reusable_components/buttons/send_button.dart';

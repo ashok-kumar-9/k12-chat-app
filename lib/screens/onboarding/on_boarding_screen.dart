@@ -1,4 +1,4 @@
-import 'package:flash_chat/constants.dart';
+import 'package:flash_chat/utils/constants.dart';
 import 'package:flash_chat/screens/login_screen.dart';
 import 'package:flash_chat/services/shared_prefs.dart';
 import 'package:flutter/material.dart';
@@ -97,7 +97,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 24.0)
                   .copyWith(bottom: 24),
               child: _currentPage + 1 == contents.length
-                  ? ReusableWidgets().textButton(
+                  ? ReusableWidgets().customButton(
                       onTap: () {
                         SharedPrefs().isOnBoardingDone = true;
                         Navigator.popAndPushNamed(context, LoginScreen.id);
@@ -124,7 +124,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                             style: TextStyle(color: Colors.black),
                           ),
                         ),
-                        ReusableWidgets().textButton(
+                        ReusableWidgets().customButton(
                           onTap: () {
                             _pageController.nextPage(
                               duration: const Duration(milliseconds: 200),

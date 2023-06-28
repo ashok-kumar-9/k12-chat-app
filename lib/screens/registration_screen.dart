@@ -1,5 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flash_chat/constants.dart';
+import 'package:flash_chat/utils/constants.dart';
 import 'package:flash_chat/reusable_components/toasts/custom_toast.dart';
 import 'package:flash_chat/screens/group_chat_screen.dart';
 import 'package:flash_chat/services/error_messages.dart';
@@ -114,7 +114,7 @@ class _RegsiterFormState extends State<RegsiterForm> {
                   isPassword: true,
                 ),
                 const SizedBox(height: 24.0),
-                ReusableWidgets().textButton(
+                ReusableWidgets().customButton(
                     onTap: password == null || password == ''
                         ? () {
                             setState(() {
