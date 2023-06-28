@@ -25,9 +25,6 @@ class FlashChat extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark().copyWith(
         textTheme: const TextTheme(
-          bodyLarge: TextStyle(color: Colors.black54),
-          bodyMedium: TextStyle(color: Colors.black54),
-          bodySmall: TextStyle(color: Colors.black54),
         ),
       ),
       initialRoute: "splash",

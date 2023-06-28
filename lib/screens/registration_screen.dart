@@ -7,6 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 import '../components/reusable_widgets.dart';
+import '../services/shared_prefs.dart';
 
 extension EmailValidator on String {
   bool isValidEmail() {
@@ -100,7 +101,8 @@ class _RegsiterFormState extends State<RegsiterForm> {
                     email = value;
                   }),
                   style: CustomTextStyles.kTextInputStyle,
-                  decoration: TextFieldDecorations.kTextFieldDecoration.copyWith(
+                  decoration:
+                      TextFieldDecorations.kTextFieldDecoration.copyWith(
                     errorText: _submitted ? _errorText : null,
                   ),
                   controller: _controller,
@@ -116,8 +118,8 @@ class _RegsiterFormState extends State<RegsiterForm> {
                     });
                   },
                   style: CustomTextStyles.kTextInputStyle,
-                  decoration: TextFieldDecorations.kTextFieldDecoration.copyWith(
-                      hintText: 'Choose a Password'),
+                  decoration: TextFieldDecorations.kTextFieldDecoration
+                      .copyWith(hintText: 'Choose a Password'),
                 ),
                 const SizedBox(height: 24.0),
                 ReusableWidgets().textButton(
@@ -142,7 +144,10 @@ class _RegsiterFormState extends State<RegsiterForm> {
                                 await _auth.createUserWithEmailAndPassword(
                                     email: email!, password: password!);
 
-                                Navigator.pushNamed(context, GroupChatScreen.id);
+                                SharedPrefs().email = email!;
+                                SharedPrefs().isLoggedIn = true;
+                                Navigator.pushNamed(
+                                    context, GroupChatScreen.id);
                                 setState(() {
                                   _saving = false;
                                 });
