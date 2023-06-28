@@ -17,6 +17,8 @@ class MessageField extends StatelessWidget {
         onChanged: onChanged,
         decoration: TextFieldDecorations.kMessageTextFieldDecoration,
         style: const TextStyle(color: Colors.blueGrey),
+        maxLines: null,
+        keyboardType: TextInputType.multiline,
       ),
     );
   }

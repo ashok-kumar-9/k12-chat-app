@@ -4,6 +4,7 @@ import 'package:flash_chat/components/buttons/send_button.dart';
 import 'package:flash_chat/constants.dart';
 import 'package:flutter/material.dart';
 
+import '../components/message_stream.dart';
 import '../components/message_text_field.dart';
 
 final _firestore = FirebaseFirestore.instance;
@@ -57,7 +58,12 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            MessageStream(receiver: widget.receiverId),
+            MessageStream(
+              receiver: widget.receiverId,
+              email: loggedInUser!.email??"",
+              isPersonal: true,
+              stream: _firestore.collection('personal').orderBy('time').snapshots(),
+            ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Container(
@@ -103,99 +109,6 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class MessageStream extends StatelessWidget {
-  final String receiver;
-  const MessageStream({Key? key, required this.receiver}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: _firestore.collection('personal').orderBy('time').snapshots(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Expanded(
-              child: Center(child: CircularProgressIndicator()));
-        } else if (snapshot.hasData) {
-          var ml = snapshot.data!.docs.where((element) {
-            if (element['receiver'] == receiver ||
-                element['sender'] == receiver) {
-              return true;
-            }
-            return false;
-          });
-          var messages = ml.toList().reversed; //snapshot.data!.docs.reversed;
-
-          List<TextBubble> messageWidget = [];
-          for (var it in messages) {
-            messageWidget.add(TextBubble(it: it));
-          }
-          return Expanded(
-            child: ListView(
-              reverse: true,
-              physics: const BouncingScrollPhysics(),
-              children: messageWidget,
-            ),
-          );
-        } else {
-          return const Expanded(child: Text('Quiet Empty'));
-        }
-      },
-    );
-  }
-}
-
-class TextBubble extends StatelessWidget {
-  const TextBubble({
-    super.key,
-    required this.it,
-  });
-
-  final QueryDocumentSnapshot<Object?> it;
-
-  @override
-  Widget build(BuildContext context) {
-    final bool isMe = (loggedInUser!.email == it['sender']);
-
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        mainAxisAlignment:
-            isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.only(
-                  topLeft: isMe
-                      ? const Radius.circular(16)
-                      : const Radius.circular(0),
-                  topRight: isMe
-                      ? const Radius.circular(0)
-                      : const Radius.circular(16),
-                  bottomLeft: const Radius.circular(16),
-                  bottomRight: const Radius.circular(16)),
-              color: isMe ? AppColors.toChatColor : AppColors.sendChatColor,
-            ),
-            // elevation: 5,
-            child: Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Text(
-                '${it['text']}',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 15.0,
-                  overflow: TextOverflow.visible,
-                ),
-                maxLines: 3,
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }
