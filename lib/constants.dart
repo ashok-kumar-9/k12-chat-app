@@ -18,6 +18,10 @@ class CustomTextStyles {
   );
 }
 
+class CustomMeasurements {
+  static double popupOptionHeight=36;
+}
+
 class AppColors {
   static Color onBoarding1 = const Color(0xFFBAD3C8);
   static Color onBoarding2 = const Color(0xFFFFE59E);
@@ -39,6 +43,7 @@ class TextFieldDecorations {
     ),
     border: InputBorder.none,
   );
+
   static InputDecoration kTextFieldDecoration = InputDecoration(
     hintText: 'Enter your email',
     hintStyle: TextStyle(

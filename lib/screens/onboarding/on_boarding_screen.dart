@@ -1,9 +1,9 @@
-import 'package:flash_chat/components/reusable_widgets.dart';
 import 'package:flash_chat/constants.dart';
 import 'package:flash_chat/screens/login_screen.dart';
 import 'package:flash_chat/services/shared_prefs.dart';
 import 'package:flutter/material.dart';
 
+import '../../reusable_components/reusable_widgets.dart';
 import 'onboarding_data.dart';
 
 class OnBoardingScreen extends StatefulWidget {

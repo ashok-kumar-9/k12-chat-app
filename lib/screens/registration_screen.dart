@@ -1,12 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flash_chat/constants.dart';
+import 'package:flash_chat/reusable_components/toasts/custom_toast.dart';
 import 'package:flash_chat/screens/group_chat_screen.dart';
 import 'package:flash_chat/services/error_messages.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
-import '../components/reusable_widgets.dart';
+import '../reusable_components/reusable_widgets.dart';
+import '../reusable_components/textfields/credentials_textfield.dart';
 import '../services/shared_prefs.dart';
 
 extension EmailValidator on String {
@@ -94,32 +95,23 @@ class _RegsiterFormState extends State<RegsiterForm> {
                   ),
                 ),
                 const SizedBox(height: 48.0),
-                TextField(
-                  textAlign: TextAlign.center,
-                  keyboardType: TextInputType.emailAddress,
-                  onChanged: (value) => setState(() {
+                CredentialsTextField(
+                  onChanged: (value) {
                     email = value;
-                  }),
-                  style: CustomTextStyles.kTextInputStyle,
-                  decoration:
-                      TextFieldDecorations.kTextFieldDecoration.copyWith(
-                    errorText: _submitted ? _errorText : null,
-                  ),
+                  },
+                  isPassword: false,
+                  isSubmitted: _submitted,
                   controller: _controller,
                 ),
                 const SizedBox(height: 12.0),
-                TextField(
-                  textAlign: TextAlign.center,
-                  keyboardType: TextInputType.visiblePassword,
+                CredentialsTextField(
                   onChanged: (value) {
                     //Do something with the user input.
                     setState(() {
                       password = value;
                     });
                   },
-                  style: CustomTextStyles.kTextInputStyle,
-                  decoration: TextFieldDecorations.kTextFieldDecoration
-                      .copyWith(hintText: 'Choose a Password'),
+                  isPassword: true,
                 ),
                 const SizedBox(height: 24.0),
                 ReusableWidgets().textButton(
@@ -151,15 +143,7 @@ class _RegsiterFormState extends State<RegsiterForm> {
                                 setState(() {
                                   _saving = false;
                                 });
-                                Fluttertoast.showToast(
-                                  msg: 'Welcome to Flash Chat',
-                                  toastLength: Toast.LENGTH_LONG,
-                                  gravity: ToastGravity.BOTTOM,
-                                  timeInSecForIosWeb: 2,
-                                  backgroundColor: Colors.white,
-                                  textColor: Colors.black87,
-                                  fontSize: 16.0,
-                                );
+                                showCustomToast(message: 'Welcome to Flash Chat');
                               } on FirebaseAuthException catch (e) {
                                 setState(() {
                                   _saving = false;
@@ -169,14 +153,7 @@ class _RegsiterFormState extends State<RegsiterForm> {
                                     getErrorMessage('signup', e.code);
 
                                 debugPrint(e.code);
-                                Fluttertoast.showToast(
-                                    msg: errorMessage,
-                                    toastLength: Toast.LENGTH_LONG,
-                                    gravity: ToastGravity.BOTTOM,
-                                    timeInSecForIosWeb: 2,
-                                    backgroundColor: Colors.black,
-                                    textColor: Colors.white,
-                                    fontSize: 16.0);
+                                showCustomToast(message: errorMessage);
                               }
                             } else {
                               null;

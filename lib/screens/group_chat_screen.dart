@@ -1,11 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flash_chat/constants.dart';
+import 'package:flash_chat/reusable_components/bottom_sheets/warning_bottom_sheet.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
-import '../components/message_stream.dart';
-import '../components/message_text_field.dart';
+
+import '../reusable_components/message_stream.dart';
+import '../reusable_components/message_text_field.dart';
 import '../services/shared_prefs.dart';
 
 final _firestore = FirebaseFirestore.instance;
@@ -46,63 +47,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        showModalBottomSheet(
-            context: context,
-            builder: (context) {
-              return Container(
-                height: 100,
-                color: Colors.white,
-                padding: const EdgeInsets.all(8),
-                child: Column(
-                  children: [
-                    const Text(
-                      'Do you want to exit?',
-                      style: TextStyle(fontSize: 20, color: Colors.black),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            SystemNavigator.pop();
-                          },
-                          child: Container(
-                            width: MediaQuery.of(context).size.width * 0.25,
-                            height: 36,
-                            color: Colors.red,
-                            padding: const EdgeInsets.all(8),
-                            child: const Center(
-                              child: Text(
-                                'Yes',
-                              ),
-                            ),
-                          ),
-                        ),
-                        InkWell(
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
-                          child: Container(
-                            width: MediaQuery.of(context).size.width * 0.25,
-                            height: 36,
-                            color: Colors.green,
-                            padding: const EdgeInsets.all(8),
-                            child: const Center(
-                              child: Text(
-                                'No',
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              );
-            });
+        showWarningBottomSheet(context, 'Do you want to exit?');
         return false;
       },
       child: Scaffold(

@@ -1,10 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flash_chat/components/reusable_widgets.dart';
 import 'package:flash_chat/constants.dart';
+import 'package:flash_chat/reusable_components/toasts/custom_toast.dart';
+import 'package:flash_chat/services/email_validation.dart';
 import 'package:flash_chat/services/error_messages.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+
+import '../reusable_components/reusable_widgets.dart';
+import '../reusable_components/textfields/credentials_textfield.dart';
 
 class ResetPasswordScreen extends StatelessWidget {
   const ResetPasswordScreen({super.key});
@@ -45,25 +48,6 @@ class _ResetFormState extends State<ResetForm> {
   bool _saving = false;
   bool _submitted = false;
 
-  String? get _errorText {
-    // at any time, we can get the text from _controller.value.text
-    final text = _controller.value.text;
-    // Note: you can do your own custom validation here
-    // Move this logic this outside the widget for more testable code
-    if (text.isEmpty) {
-      return 'Can\'t be empty';
-    }
-    if (text.length < 4) {
-      return 'Too short';
-    }
-    if (text.isEmpty ||
-        !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(text)) {
-      return "Enter valid email address";
-    }
-    // return null if the text is valid
-    return null;
-  }
-
   @override
   void dispose() {
     _controller.dispose();
@@ -92,21 +76,17 @@ class _ResetFormState extends State<ResetForm> {
                   ),
                 ),
                 const SizedBox(height: 24.0),
-                TextField(
-                  textAlign: TextAlign.center,
-                  keyboardType: TextInputType.emailAddress,
+                CredentialsTextField(
                   onChanged: (value) {
                     email = value;
                   },
-                  style: CustomTextStyles.kTextInputStyle,
-                  decoration: TextFieldDecorations.kTextFieldDecoration.copyWith(
-                    errorText: _submitted ? _errorText : null,
-                  ),
+                  isPassword: false,
+                  isSubmitted: _submitted,
                   controller: _controller,
                 ),
                 const SizedBox(height: 24.0),
                 ReusableWidgets().textButton(
-                  function: _errorText != null
+                  function: validateEmail(_controller.value.text) != null
                       ? () {
                           setState(() {
                             _submitted = true;
@@ -116,7 +96,7 @@ class _ResetFormState extends State<ResetForm> {
                           setState(() {
                             _submitted = true;
                           });
-                          if (_errorText == null) {
+                          if (validateEmail(_controller.value.text) == null) {
                             setState(() {
                               _saving = true;
                             });
@@ -125,15 +105,7 @@ class _ResetFormState extends State<ResetForm> {
                               setState(() {
                                 _saving = false;
                               });
-                              Fluttertoast.showToast(
-                                msg: 'Reset link sent to your email.',
-                                toastLength: Toast.LENGTH_LONG,
-                                gravity: ToastGravity.CENTER,
-                                timeInSecForIosWeb: 2,
-                                backgroundColor: Colors.black,
-                                textColor: Colors.white,
-                                fontSize: 16.0,
-                              );
+                              showCustomToast(message: 'Reset link sent to your email.');
                               Navigator.pop(context);
                             } on FirebaseAuthException catch (e) {
                               setState(() {
@@ -143,15 +115,7 @@ class _ResetFormState extends State<ResetForm> {
                                   getErrorMessage('reset', e.code);
 
                               //print(e.code);
-                              Fluttertoast.showToast(
-                                msg: errorMessage,
-                                toastLength: Toast.LENGTH_LONG,
-                                gravity: ToastGravity.CENTER,
-                                timeInSecForIosWeb: 2,
-                                backgroundColor: Colors.red,
-                                textColor: Colors.blue,
-                                fontSize: 16.0,
-                              );
+                              showCustomToast(message: errorMessage);
                             }
                           } else {
                             null;

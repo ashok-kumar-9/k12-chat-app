@@ -1,14 +1,17 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flash_chat/components/reusable_widgets.dart';
 import 'package:flash_chat/constants.dart';
+import 'package:flash_chat/reusable_components/toasts/custom_toast.dart';
 import 'package:flash_chat/screens/group_chat_screen.dart';
 import 'package:flash_chat/screens/registration_screen.dart';
 import 'package:flash_chat/screens/reset_password.dart';
+import 'package:flash_chat/services/email_validation.dart';
 import 'package:flash_chat/services/error_messages.dart';
 import 'package:flash_chat/services/shared_prefs.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+
+import '../reusable_components/reusable_widgets.dart';
+import '../reusable_components/textfields/credentials_textfield.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String id = 'login_screen';
@@ -26,20 +29,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   bool _saving = false;
   bool _submitted = false;
-
-  String? get _errorText {
-    // at any time, we can get the text from _controller.value.text
-    final text = _controller.value.text;
-    // Note: you can do your own custom validation here
-    // Move this logic this outside the widget for more testable code
-
-    if (text.isEmpty ||
-        !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(text)) {
-      return "Enter valid email address";
-    }
-    // return null if the text is valid
-    return null;
-  }
 
   @override
   void dispose() {
@@ -72,33 +61,23 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   const SizedBox(height: 48.0),
-                  TextField(
-                    textAlign: TextAlign.center,
-                    keyboardType: TextInputType.emailAddress,
+                  CredentialsTextField(
                     onChanged: (value) {
                       email = value;
                     },
-                    style: CustomTextStyles.kTextInputStyle,
-                    decoration:
-                        TextFieldDecorations.kTextFieldDecoration.copyWith(
-                      errorText: _submitted ? _errorText : null,
-                    ),
+                    isPassword: false,
+                    isSubmitted: _submitted,
                     controller: _controller,
                   ),
                   const SizedBox(height: 12.0),
-                  TextField(
-                    obscureText: true,
-                    textAlign: TextAlign.center,
-                    keyboardType: TextInputType.text,
+                  CredentialsTextField(
                     onChanged: (value) {
                       //Do something with the user input.
                       setState(() {
                         password = value;
                       });
                     },
-                    style: CustomTextStyles.kTextInputStyle,
-                    decoration: TextFieldDecorations.kTextFieldDecoration
-                        .copyWith(hintText: 'Enter your password'),
+                    isPassword: true,
                   ),
                   const SizedBox(height: 24.0),
                   ReusableWidgets().textButton(
@@ -112,7 +91,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             setState(() {
                               _submitted = true;
                             });
-                            if (_errorText == null) {
+                            if (validateEmail(_controller.value.text) == null) {
                               setState(() {
                                 _saving = true;
                               });
@@ -120,15 +99,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                 //var user =
                                 await _auth.signInWithEmailAndPassword(
                                     email: email!, password: password!);
-                                Fluttertoast.showToast(
-                                  msg: 'Welcome to Flash Chat',
-                                  toastLength: Toast.LENGTH_LONG,
-                                  gravity: ToastGravity.BOTTOM,
-                                  timeInSecForIosWeb: 2,
-                                  backgroundColor: Colors.white,
-                                  textColor: Colors.blue[800],
-                                  fontSize: 16.0,
-                                );
+
+                                showCustomToast(message: 'Welcome to Flash Chat');
+
                                 SharedPrefs().email = email!;
                                 SharedPrefs().isLoggedIn = true;
                                 Navigator.of(context)
@@ -144,15 +117,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     getErrorMessage('login', e.code);
 
                                 //print(e.code);
-                                Fluttertoast.showToast(
-                                  msg: errorMessage,
-                                  toastLength: Toast.LENGTH_SHORT,
-                                  gravity: ToastGravity.BOTTOM,
-                                  timeInSecForIosWeb: 2,
-                                  backgroundColor: Colors.black,
-                                  textColor: Colors.white,
-                                  fontSize: 16.0,
-                                );
+                                showCustomToast(message: errorMessage);
                               }
                             }
                           },
