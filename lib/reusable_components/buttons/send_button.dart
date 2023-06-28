@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../../utils/constants.dart';
 
 class SendButton extends StatelessWidget {
-
   final bool isActive;
 
   const SendButton({super.key, required this.isActive});
@@ -11,11 +10,11 @@ class SendButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CircleAvatar(
-      backgroundColor: isActive ? AppColors.toChatInactiveColor : AppColors.toChatColor,
+      backgroundColor: isActive ? AppColors.grey : AppColors.toChatColor,
       radius: RadiusConstants.sendButtonRadius,
       child: const Padding(
-        padding: EdgeInsets.only(left: 4.0),
-        child: Icon(Icons.send, color: Colors.white, size: 18),
+        padding: EdgeInsets.only(left: PaddingConstants.padding1 * 0.5),
+        child: Icon(Icons.send, color: AppColors.white),
       ),
     );
   }

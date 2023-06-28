@@ -50,7 +50,7 @@ class FlashChat extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ScreenSize.init(context);
-
+    
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark().copyWith(

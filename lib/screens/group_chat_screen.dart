@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flash_chat/utils/constants.dart';
 import 'package:flash_chat/reusable_components/bottom_sheets/warning_bottom_sheet.dart';
+import 'package:flash_chat/utils/constants.dart';
 import 'package:flutter/material.dart';
 
-
+import '../reusable_components/buttons/send_button.dart';
 import '../reusable_components/message_stream.dart';
 import '../reusable_components/message_text_field.dart';
 import '../services/shared_prefs.dart';
@@ -79,91 +79,74 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
         return false;
       },
       child: Scaffold(
-        backgroundColor: AppColors.bgColorHome,
+        backgroundColor: AppColors.bgColor,
         appBar: AppBar(
+          backgroundColor: AppColors.appBarColor,
           automaticallyImplyLeading: false,
           leading: null,
           actions: <Widget>[
             IconButton(
                 icon: const Icon(Icons.logout),
                 onPressed: () {
-                  //Implement logout functionality
                   _auth.signOut();
                   SharedPrefs().clearSharedPrefs();
                   Navigator.of(context).popAndPushNamed('splash');
-                  //Navigator.pushNamed(context, WelcomeScreen.id);
                 }),
           ],
-          title: const Text('⚡️Group Chat'),
-          backgroundColor: AppColors.appBarColor,
+          title: Text('⚡️ Group Chat', style: Theme.of(context).textTheme.h3),
         ),
-        body: SafeArea(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              MessageStream(
-                receiver: "",
-                email: loggedInUser!.email ?? "",
-                stream: _firestore
-                    .collection('messages')
-                    .orderBy('time')
-                    .snapshots(),
-                isPersonal: false,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  decoration: ContainerDecorations.kMessageContainerDecoration,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      MessageField(
-                        onChanged: (value) {
-                          messageText.value = value;
-                        },
-                        controller: messageTextController,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 8.0),
-                        child: InkWell(
-                          onTap: () {
-                            if (messageText.value == '') {
-                            } else {
-                              //Implement send functionality.
-                              _firestore.collection('messages').add({
-                                'text': messageText.value,
-                                'sender': loggedInUser!.email,
-                                'time': DateTime.now(),
-                              });
-                              messageTextController.clear();
-                              messageText.value = "";
-                            }
-                          },
-                          child: ValueListenableBuilder(
-                            valueListenable: messageText,
-                            builder: (context, val, child) {
-                              return CircleAvatar(
-                                backgroundColor: val == ""
-                                    ? AppColors.toChatInactiveColor
-                                    : AppColors.toChatColor,
-                                radius: RadiusConstants.sendButtonRadius,
-                                child: const Padding(
-                                  padding: EdgeInsets.only(left: 4.0),
-                                  child: Icon(Icons.send,
-                                      color: Colors.white, size: 18),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                      ),
-                    ],
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            MessageStream(
+              receiver: "",
+              email: loggedInUser!.email ?? "",
+              stream:
+                  _firestore.collection('messages').orderBy('time').snapshots(),
+              isPersonal: false,
+            ),
+            Container(
+              decoration: ContainerDecorations.kMessageContainerDecoration,
+              margin: const EdgeInsets.all(PaddingConstants.padding1),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  MessageField(
+                    onChanged: (value) {
+                      messageText.value = value;
+                    },
+                    controller: messageTextController,
                   ),
-                ),
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(right: PaddingConstants.padding1),
+                    child: InkWell(
+                      onTap: () {
+                        if (messageText.value == '') {
+                        } else {
+                          //Implement send functionality.
+                          _firestore.collection('messages').add({
+                            'text': messageText.value,
+                            'sender': loggedInUser!.email,
+                            'time': DateTime.now(),
+                          });
+                          messageTextController.clear();
+                          messageText.value = "";
+                        }
+                      },
+                      child: ValueListenableBuilder(
+                        valueListenable: messageText,
+                        builder: (context, val, child) {
+                          return SendButton(isActive: val == "");
+                        },
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
