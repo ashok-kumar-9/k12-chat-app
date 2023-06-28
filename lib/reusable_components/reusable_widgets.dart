@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 
 class ReusableWidgets {
   GestureDetector textButton(
-      {required Function() function, required String buttonText, Color color = Colors.black, Color shadowColor = Colors.blueAccent}) {
+      {required Function() onTap,
+      required String buttonText,
+      Color color = Colors.black,
+      Color shadowColor = Colors.blueAccent}) {
     return GestureDetector(
-      onTap: function,
+      onTap: onTap,
       child: SizedBox(
         height: 50,
         child: Container(
@@ -12,7 +15,7 @@ class ReusableWidgets {
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8.0),
               color: color,
-              boxShadow:  [
+              boxShadow: [
                 BoxShadow(
                     color: shadowColor,
                     blurRadius: 0.0,

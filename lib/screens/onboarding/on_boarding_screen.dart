@@ -84,7 +84,6 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                   );
                 },
               ),
-
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -99,7 +98,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                   .copyWith(bottom: 24),
               child: _currentPage + 1 == contents.length
                   ? ReusableWidgets().textButton(
-                      function: () {
+                      onTap: () {
                         SharedPrefs().isOnBoardingDone = true;
                         Navigator.popAndPushNamed(context, LoginScreen.id);
                       },
@@ -126,7 +125,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                           ),
                         ),
                         ReusableWidgets().textButton(
-                          function: () {
+                          onTap: () {
                             _pageController.nextPage(
                               duration: const Duration(milliseconds: 200),
                               curve: Curves.easeIn,
