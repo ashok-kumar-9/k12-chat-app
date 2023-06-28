@@ -30,7 +30,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
         //print(loggedInUser!.email);
       }
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
     }
   }
 
@@ -165,8 +165,9 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                             valueListenable: messageText,
                             builder: (context, val, child) {
                               return CircleAvatar(
-                                backgroundColor:
-                                    val == "" ? AppColors.toChatColor.withOpacity(0.5) : AppColors.toChatColor,
+                                backgroundColor: val == ""
+                                    ? AppColors.toChatColor.withOpacity(0.5)
+                                    : AppColors.toChatColor,
                                 radius: 20,
                                 child: const Padding(
                                   padding: EdgeInsets.only(left: 4.0),

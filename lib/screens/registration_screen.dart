@@ -121,7 +121,7 @@ class _RegsiterFormState extends State<RegsiterForm> {
                 ),
                 const SizedBox(height: 24.0),
                 ReusableWidgets().textButton(
-                    function: password == null || password == ''
+                    onTap: password == null || password == ''
                         ? () {
                             setState(() {
                               _submitted = true;
@@ -142,7 +142,8 @@ class _RegsiterFormState extends State<RegsiterForm> {
                                 await _auth.createUserWithEmailAndPassword(
                                     email: email!, password: password!);
 
-                                Navigator.pushNamed(context, GroupChatScreen.id);
+                                Navigator.pushNamed(
+                                    context, GroupChatScreen.id);
                                 setState(() {
                                   _saving = false;
                                 });

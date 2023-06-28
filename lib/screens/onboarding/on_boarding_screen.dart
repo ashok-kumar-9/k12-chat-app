@@ -98,7 +98,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                 padding: const EdgeInsets.all(10),
                 child: _currentPage + 1 == contents.length
                     ? ReusableWidgets().textButton(
-                        function: () =>
+                        onTap: () =>
                             Navigator.popAndPushNamed(context, "splash"),
                         buttonText: "START")
                     : Row(
@@ -122,7 +122,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                             ),
                           ),
                           ReusableWidgets().textButton(
-                            function: () {
+                            onTap: () {
                               _pageController.nextPage(
                                 duration: const Duration(milliseconds: 200),
                                 curve: Curves.easeIn,

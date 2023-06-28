@@ -96,7 +96,7 @@ class _ResetFormState extends State<ResetForm> {
                 ),
                 const SizedBox(height: 24.0),
                 ReusableWidgets().textButton(
-                  function: _errorText != null
+                  onTap: _errorText != null
                       ? () {
                           setState(() {
                             _submitted = true;
