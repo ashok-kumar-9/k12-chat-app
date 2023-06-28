@@ -30,7 +30,6 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
       var user = _auth.currentUser;
       if (user != null) {
         loggedInUser = user;
-        //print(loggedInUser!.email);
       }
     } catch (e) {
       debugPrint("e");
