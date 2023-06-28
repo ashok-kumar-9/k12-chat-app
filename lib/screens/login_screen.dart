@@ -93,8 +93,8 @@ class _LoginFormState extends State<LoginForm> {
                   onChanged: (value) {
                     email = value;
                   },
-                  style: kTextInputStyle,
-                  decoration: kTextFieldDecoration.copyWith(
+                  style: CustomTextStyles.kTextInputStyle,
+                  decoration: TextFieldDecorations.kTextFieldDecoration.copyWith(
                     errorText: _submitted ? _errorText : null,
                   ),
                   controller: _controller,
@@ -110,8 +110,8 @@ class _LoginFormState extends State<LoginForm> {
                       password = value;
                     });
                   },
-                  style: kTextInputStyle,
-                  decoration: kTextFieldDecoration.copyWith(
+                  style: CustomTextStyles.kTextInputStyle,
+                  decoration: TextFieldDecorations.kTextFieldDecoration.copyWith(
                       hintText: 'Enter your password'),
                 ),
                 const SizedBox(height: 24.0),

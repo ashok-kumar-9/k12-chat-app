@@ -98,8 +98,8 @@ class _ResetFormState extends State<ResetForm> {
                   onChanged: (value) {
                     email = value;
                   },
-                  style: kTextInputStyle,
-                  decoration: kTextFieldDecoration.copyWith(
+                  style: CustomTextStyles.kTextInputStyle,
+                  decoration: TextFieldDecorations.kTextFieldDecoration.copyWith(
                     errorText: _submitted ? _errorText : null,
                   ),
                   controller: _controller,

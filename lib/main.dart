@@ -37,7 +37,7 @@ class FlashChat extends StatelessWidget {
         RegistrationScreen.id: (context) => const RegistrationScreen(),
         ResetPasswordScreen.id: (context) => const ResetPasswordScreen(),
         'splash': (context) => const SplashScreen(),
-        'on_boarding': (context) => const OnBoardingScreen()
+        'on_boarding': (context) => const OnBoardingScreen(),
       },
     );
   }
