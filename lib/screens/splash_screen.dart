@@ -1,6 +1,7 @@
 import 'package:flash_chat/constants.dart';
-import 'package:flash_chat/dump/welcome_screen.dart';
+import 'package:flash_chat/screens/group_chat_screen.dart';
 import 'package:flash_chat/screens/login_screen.dart';
+import 'package:flash_chat/services/shared_prefs.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -19,7 +20,15 @@ class _SplashScreenState extends State<SplashScreen> {
 
   void navigationFromSplashScreen() {
     Future.delayed(const Duration(seconds: 2), () {
-      Navigator.popAndPushNamed(context, LoginScreen.id);
+      if (SharedPrefs().isLoggedIn) {
+        Navigator.popAndPushNamed(context, GroupChatScreen.id);
+      } else {
+        if (SharedPrefs().isOnBoardingDone) {
+          Navigator.popAndPushNamed(context, LoginScreen.id);
+        } else {
+          Navigator.popAndPushNamed(context, 'on_boarding');
+        }
+      }
     });
   }
 

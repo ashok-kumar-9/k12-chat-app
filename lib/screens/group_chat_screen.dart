@@ -5,6 +5,8 @@ import 'package:flash_chat/screens/personal_chat_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../services/shared_prefs.dart';
+
 final _firestore = FirebaseFirestore.instance;
 User? loggedInUser;
 
@@ -114,7 +116,8 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                 onPressed: () {
                   //Implement logout functionality
                   _auth.signOut();
-                  Navigator.of(context).pop();
+                  SharedPrefs().clearSharedPrefs();
+                  Navigator.of(context).popAndPushNamed('splash');
                   //Navigator.pushNamed(context, WelcomeScreen.id);
                 }),
           ],
