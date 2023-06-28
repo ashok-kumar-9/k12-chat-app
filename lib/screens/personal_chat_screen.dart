@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flash_chat/components/buttons/send_button.dart';
 import 'package:flash_chat/constants.dart';
 import 'package:flutter/material.dart';
 
-import '../components/message_stream.dart';
-import '../components/message_text_field.dart';
+import '../reusable_components/buttons/send_button.dart';
+import '../reusable_components/message_stream.dart';
+import '../reusable_components/message_text_field.dart';
 
 final _firestore = FirebaseFirestore.instance;
 User? loggedInUser;

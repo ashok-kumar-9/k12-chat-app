@@ -4,8 +4,9 @@ import 'package:flash_chat/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../components/message_stream.dart';
-import '../components/message_text_field.dart';
+
+import '../reusable_components/message_stream.dart';
+import '../reusable_components/message_text_field.dart';
 import '../services/shared_prefs.dart';
 
 final _firestore = FirebaseFirestore.instance;

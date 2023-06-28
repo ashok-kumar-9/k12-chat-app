@@ -39,6 +39,7 @@ class TextFieldDecorations {
     ),
     border: InputBorder.none,
   );
+
   static InputDecoration kTextFieldDecoration = InputDecoration(
     hintText: 'Enter your email',
     hintStyle: TextStyle(

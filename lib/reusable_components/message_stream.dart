@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flash_chat/components/text_bubble.dart';
+import 'package:flash_chat/reusable_components/text_bubble.dart';
 import 'package:flutter/material.dart';
 
 class MessageStream extends StatelessWidget {
