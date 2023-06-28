@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flash_chat/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,6 +11,19 @@ import '../services/shared_prefs.dart';
 
 final _firestore = FirebaseFirestore.instance;
 User? loggedInUser;
+var userId;
+
+Future<void> saveTokenToDatabase(String token) async {
+  // Assume user is logged in for this example
+  if (loggedInUser != null) {
+    userId = FirebaseAuth.instance.currentUser!.uid;
+
+    await FirebaseFirestore.instance.collection('users').doc(userId).update({
+      'token': token,
+      'email': loggedInUser!.email,
+    });
+  }
+}
 
 class GroupChatScreen extends StatefulWidget {
   static const String id = 'chat_screen';
@@ -24,6 +38,19 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
   final messageTextController = TextEditingController();
   ValueNotifier<String> messageText = ValueNotifier('');
   final _auth = FirebaseAuth.instance;
+
+  //String? _token;
+
+  Future<void> setupToken() async {
+    // Get the token each time the application loads
+    String? token = await FirebaseMessaging.instance.getToken();
+
+    // Save the initial token to the database
+    await saveTokenToDatabase(token!);
+
+    // Any time the token refreshes, store this in the database too.
+    FirebaseMessaging.instance.onTokenRefresh.listen(saveTokenToDatabase);
+  }
 
   void getCurrentUser() {
     try {
@@ -40,6 +67,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
   void initState() {
     super.initState();
     getCurrentUser();
+    setupToken();
   }
 
   @override

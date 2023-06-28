@@ -102,7 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 24.0),
                   ReusableWidgets().textButton(
-                    function: password == null || password == ''
+                    onTap: password == null || password == ''
                         ? () {
                             setState(() {
                               _submitted = true;

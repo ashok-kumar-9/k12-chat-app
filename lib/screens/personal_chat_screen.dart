@@ -33,7 +33,7 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
         //print(loggedInUser!.email);
       }
     } catch (e) {
-      debugPrint("$e");
+      debugPrint(e.toString());
     }
   }
 
@@ -60,9 +60,10 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
           children: <Widget>[
             MessageStream(
               receiver: widget.receiverId,
-              email: loggedInUser!.email??"",
+              email: loggedInUser!.email ?? "",
               isPersonal: true,
-              stream: _firestore.collection('personal').orderBy('time').snapshots(),
+              stream:
+                  _firestore.collection('personal').orderBy('time').snapshots(),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
