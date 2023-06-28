@@ -4,6 +4,7 @@ import 'package:flash_chat/screens/login_screen.dart';
 import 'package:flash_chat/screens/onboarding/on_boarding_screen.dart';
 import 'package:flash_chat/screens/registration_screen.dart';
 import 'package:flash_chat/screens/splash_screen.dart';
+import 'package:flash_chat/services/shared_prefs.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'firebase_options.dart';
@@ -27,6 +28,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await SharedPrefs().init();
   final messaging = FirebaseMessaging.instance;
 
   final settings = await messaging.requestPermission(
@@ -62,20 +64,16 @@ class FlashChat extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark().copyWith(
-        textTheme: const TextTheme(
-          bodyLarge: TextStyle(color: Colors.black54),
-          bodyMedium: TextStyle(color: Colors.black54),
-          bodySmall: TextStyle(color: Colors.black54),
-        ),
+        textTheme: const TextTheme(),
       ),
-      initialRoute: "on_boarding",
+      initialRoute: "splash",
       routes: {
         GroupChatScreen.id: (context) => const GroupChatScreen(),
         LoginScreen.id: (context) => const LoginScreen(),
         RegistrationScreen.id: (context) => const RegistrationScreen(),
         ResetPasswordScreen.id: (context) => const ResetPasswordScreen(),
         'splash': (context) => const SplashScreen(),
-        'on_boarding': (context) => const OnBoardingScreen()
+        'on_boarding': (context) => const OnBoardingScreen(),
       },
     );
   }

@@ -15,6 +15,16 @@ class ResetPasswordScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.bgColor,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        leading: GestureDetector(
+          onTap: () => Navigator.pop(context),
+          child: const Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: Colors.white,
+          ),
+        ),
+      ),
       body: const ResetForm(),
     );
   }
@@ -70,7 +80,7 @@ class _ResetFormState extends State<ResetForm> {
             padding: const EdgeInsets.symmetric(horizontal: 24.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Flexible(
                   child: Hero(
@@ -88,8 +98,8 @@ class _ResetFormState extends State<ResetForm> {
                   onChanged: (value) {
                     email = value;
                   },
-                  style: kTextInputStyle,
-                  decoration: kTextFieldDecoration.copyWith(
+                  style: CustomTextStyles.kTextInputStyle,
+                  decoration: TextFieldDecorations.kTextFieldDecoration.copyWith(
                     errorText: _submitted ? _errorText : null,
                   ),
                   controller: _controller,
@@ -155,6 +165,7 @@ class _ResetFormState extends State<ResetForm> {
                       ? Colors.blueAccent
                       : Colors.grey[400]!,
                 ),
+                const SizedBox(height: 36.0),
               ],
             ),
           ),
