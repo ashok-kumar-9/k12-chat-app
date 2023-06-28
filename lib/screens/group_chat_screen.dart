@@ -18,7 +18,7 @@ Future<void> saveTokenToDatabase(String token) async {
   if (loggedInUser != null) {
     userId = FirebaseAuth.instance.currentUser!.uid;
 
-    await FirebaseFirestore.instance.collection('users').doc(userId).update({
+    await FirebaseFirestore.instance.collection('users').add({
       'token': token,
       'email': loggedInUser!.email,
     });
