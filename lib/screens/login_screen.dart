@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flash_chat/utils/constants.dart';
 import 'package:flash_chat/reusable_components/toasts/custom_toast.dart';
 import 'package:flash_chat/screens/group_chat_screen.dart';
 import 'package:flash_chat/screens/registration_screen.dart';
@@ -7,6 +6,7 @@ import 'package:flash_chat/screens/reset_password.dart';
 import 'package:flash_chat/services/email_validation.dart';
 import 'package:flash_chat/services/error_messages.dart';
 import 'package:flash_chat/services/shared_prefs.dart';
+import 'package:flash_chat/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
@@ -46,21 +46,14 @@ class _LoginScreenState extends State<LoginScreen> {
           return ModalProgressHUD(
             inAsyncCall: _saving,
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: SpacerConstant.spacer2),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  Flexible(
-                    child: Hero(
-                      tag: 'logo',
-                      child: SizedBox(
-                        height: 150.0,
-                        child: Image.asset('images/logo.png'),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 48.0),
+                  ReusableWidgets().appLogoImage(),
+                  const SizedBox(height: SpacerConstant.spacer3 * 2),
                   CredentialsTextField(
                     onChanged: (value) {
                       email = value;
@@ -69,7 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     isSubmitted: _submitted,
                     controller: _controller,
                   ),
-                  const SizedBox(height: 12.0),
+                  const SizedBox(height: SpacerConstant.spacer2),
                   CredentialsTextField(
                     onChanged: (value) {
                       //Do something with the user input.
@@ -79,7 +72,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                     isPassword: true,
                   ),
-                  const SizedBox(height: 24.0),
+                  const SizedBox(height: SpacerConstant.spacer3),
                   ReusableWidgets().customButton(
                     onTap: password == null || password == ''
                         ? () {
@@ -100,7 +93,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                 await _auth.signInWithEmailAndPassword(
                                     email: email!, password: password!);
 
-                                showCustomToast(message: 'Welcome to Flash Chat');
+                                showCustomToast(
+                                    message: 'Welcome to Flash Chat');
 
                                 SharedPrefs().email = email!;
                                 SharedPrefs().isLoggedIn = true;
@@ -126,31 +120,27 @@ class _LoginScreenState extends State<LoginScreen> {
                             email == null ||
                             password == null ||
                             email == '')
-                        ? Colors.grey[400]!
-                        : Colors.blueAccent,
+                        ? AppColors.grey
+                        : AppColors.blue,
                     shadowColor: (password == '' ||
                             email == null ||
                             password == null ||
                             email == '')
-                        ? Colors.blueAccent
-                        : Colors.grey[400]!,
+                        ? AppColors.blue
+                        : AppColors.grey,
                   ),
-                  const SizedBox(height: 24.0),
+                  const SizedBox(height: SpacerConstant.spacer3),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       TextButton(
-                        child: const Text(
-                          'New User? Sign Up',
-                        ),
+                        child: const Text('New User? Sign Up', style: TextStyle(color: AppColors.blue),),
                         onPressed: () {
                           Navigator.pushNamed(context, RegistrationScreen.id);
                         },
                       ),
                       TextButton(
-                        child: const Text(
-                          'Forgot Password',
-                        ),
+                        child: const Text('Forgot Password', style: TextStyle(color: AppColors.blue),),
                         onPressed: () {
                           Navigator.pushNamed(context, ResetPasswordScreen.id);
                         },
