@@ -5,6 +5,7 @@ import 'package:flash_chat/screens/group_chat_screen.dart';
 import 'package:flash_chat/screens/registration_screen.dart';
 import 'package:flash_chat/screens/reset_password.dart';
 import 'package:flash_chat/services/error_messages.dart';
+import 'package:flash_chat/services/shared_prefs.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
@@ -142,7 +143,9 @@ class _LoginFormState extends State<LoginForm> {
                                 textColor: Colors.blue[800],
                                 fontSize: 16.0,
                               );
-                              Navigator.pushNamed(context, GroupChatScreen.id);
+                              SharedPrefs().email = email!;
+                              SharedPrefs().isLoggedIn = true;
+                              Navigator.of(context).popAndPushNamed(GroupChatScreen.id);
                               setState(() {
                                 _saving = false;
                               });

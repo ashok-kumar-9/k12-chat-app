@@ -1,5 +1,7 @@
 import 'package:flash_chat/components/reusable_widgets.dart';
 import 'package:flash_chat/constants.dart';
+import 'package:flash_chat/screens/login_screen.dart';
+import 'package:flash_chat/services/shared_prefs.dart';
 import 'package:flutter/material.dart';
 
 import 'onboarding_data.dart';
@@ -48,22 +50,20 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
     return Scaffold(
       backgroundColor: colors[_currentPage],
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            children: [
-              Expanded(
-                child: PageView.builder(
-                  physics: const BouncingScrollPhysics(),
-                  controller: _pageController,
-                  onPageChanged: (value) =>
-                      setState(() => _currentPage = value),
-                  itemCount: contents.length,
-                  itemBuilder: (context, i) {
-                    return Column(
+        child: Column(
+          children: [
+            Expanded(
+              child: PageView.builder(
+                physics: const BouncingScrollPhysics(),
+                controller: _pageController,
+                onPageChanged: (value) => setState(() => _currentPage = value),
+                itemCount: contents.length,
+                itemBuilder: (context, i) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Spacer(),
                         Image.asset(contents[i].image),
                         const SizedBox(height: 16),
                         Text(
@@ -79,61 +79,65 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                               fontSize: 16, color: Colors.black),
                           textAlign: TextAlign.center,
                         ),
-                        const Spacer(),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: List.generate(
-                            contents.length,
-                            (int index) => _buildDots(index: index),
+                      ],
+                    ),
+                  );
+                },
+              ),
+
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(
+                contents.length,
+                (int index) => _buildDots(index: index),
+              ),
+            ),
+            const SizedBox(height: 24.0),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0)
+                  .copyWith(bottom: 24),
+              child: _currentPage + 1 == contents.length
+                  ? ReusableWidgets().textButton(
+                      function: () {
+                        SharedPrefs().isOnBoardingDone = true;
+                        Navigator.popAndPushNamed(context, LoginScreen.id);
+                      },
+                      buttonText: "START",
+                    )
+                  : Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            _pageController.jumpToPage(2);
+                          },
+                          style: TextButton.styleFrom(
+                            elevation: 0,
+                            textStyle: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 12,
+                            ),
+                          ),
+                          child: const Text(
+                            "SKIP",
+                            style: TextStyle(color: Colors.black),
                           ),
                         ),
+                        ReusableWidgets().textButton(
+                          function: () {
+                            _pageController.nextPage(
+                              duration: const Duration(milliseconds: 200),
+                              curve: Curves.easeIn,
+                            );
+                          },
+                          buttonText: 'NEXT',
+                        ),
                       ],
-                    );
-                  },
-                ),
-              ),
-              const SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.all(10),
-                child: _currentPage + 1 == contents.length
-                    ? ReusableWidgets().textButton(
-                        function: () =>
-                            Navigator.popAndPushNamed(context, "splash"),
-                        buttonText: "START")
-                    : Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          TextButton(
-                            onPressed: () {
-                              _pageController.jumpToPage(2);
-                            },
-                            style: TextButton.styleFrom(
-                              elevation: 0,
-                              textStyle: const TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 12,
-                              ),
-                            ),
-                            child: const Text(
-                              "SKIP",
-                              style: TextStyle(color: Colors.black),
-                            ),
-                          ),
-                          ReusableWidgets().textButton(
-                            function: () {
-                              _pageController.nextPage(
-                                duration: const Duration(milliseconds: 200),
-                                curve: Curves.easeIn,
-                              );
-                            },
-                            buttonText: 'NEXT',
-                          ),
-                        ],
-                      ),
-              )
-            ],
-          ),
+                    ),
+            )
+          ],
         ),
       ),
     );
