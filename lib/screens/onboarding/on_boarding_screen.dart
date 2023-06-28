@@ -92,8 +92,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                   },
                 ),
               ),
-              const SizedBox(height: 10),
-              const SizedBox(height: 10),
+              const SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.all(10),
                 child: _currentPage + 1 == contents.length

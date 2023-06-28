@@ -1,9 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flash_chat/components/message_text_field.dart';
 import 'package:flash_chat/constants.dart';
 import 'package:flash_chat/screens/personal_chat_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+import '../components/buttons/send_button.dart';
 
 final _firestore = FirebaseFirestore.instance;
 User? loggedInUser;
@@ -30,7 +33,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
         //print(loggedInUser!.email);
       }
     } catch (e) {
-      print(e);
+      debugPrint("e");
     }
   }
 
@@ -130,20 +133,15 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Container(
-                  decoration: kMessageContainerDecoration,
+                  decoration: ContainerDecorations.kMessageContainerDecoration,
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                      Expanded(
-                        child: TextField(
-                          controller: messageTextController,
-                          onChanged: (value) {
-                            messageText.value = value;
-                            //Do something with the user input.
-                          },
-                          decoration: kMessageTextFieldDecoration,
-                          style: const TextStyle(color: Colors.blueGrey),
-                        ),
+                      MessageField(
+                        onChanged: (value) {
+                          messageText.value = value;
+                        },
+                        controller: messageTextController,
                       ),
                       Padding(
                         padding: const EdgeInsets.only(right: 8.0),
@@ -164,15 +162,8 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                           child: ValueListenableBuilder(
                             valueListenable: messageText,
                             builder: (context, val, child) {
-                              return CircleAvatar(
-                                backgroundColor:
-                                    val == "" ? AppColors.toChatColor.withOpacity(0.5) : AppColors.toChatColor,
-                                radius: 20,
-                                child: const Padding(
-                                  padding: EdgeInsets.only(left: 4.0),
-                                  child: Icon(Icons.send,
-                                      color: Colors.white, size: 18),
-                                ),
+                              return SendButton(
+                                isActive: val == "",
                               );
                             },
                           ),
@@ -311,7 +302,7 @@ class TextBubble extends StatelessWidget {
                       });
                 },
                 child: CircleAvatar(
-                  radius: 15,
+                  radius: RadiusConstants.chatAvatarRadius,
                   backgroundColor: AppColors.sendChatColor,
                   child: Padding(
                     padding: const EdgeInsets.all(2.0),

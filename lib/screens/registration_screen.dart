@@ -99,8 +99,8 @@ class _RegsiterFormState extends State<RegsiterForm> {
                   onChanged: (value) => setState(() {
                     email = value;
                   }),
-                  style: kTextInputStyle,
-                  decoration: kTextFieldDecoration.copyWith(
+                  style: CustomTextStyles.kTextInputStyle,
+                  decoration: TextFieldDecorations.kTextFieldDecoration.copyWith(
                     errorText: _submitted ? _errorText : null,
                   ),
                   controller: _controller,
@@ -115,8 +115,8 @@ class _RegsiterFormState extends State<RegsiterForm> {
                       password = value;
                     });
                   },
-                  style: kTextInputStyle,
-                  decoration: kTextFieldDecoration.copyWith(
+                  style: CustomTextStyles.kTextInputStyle,
+                  decoration: TextFieldDecorations.kTextFieldDecoration.copyWith(
                       hintText: 'Choose a Password'),
                 ),
                 const SizedBox(height: 24.0),

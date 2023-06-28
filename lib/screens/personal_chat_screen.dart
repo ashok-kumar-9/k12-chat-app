@@ -1,14 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flash_chat/components/buttons/send_button.dart';
 import 'package:flash_chat/constants.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+
+import '../components/message_text_field.dart';
 
 final _firestore = FirebaseFirestore.instance;
 User? loggedInUser;
 
 class PersonalChatScreen extends StatefulWidget {
-  static const String id = 'chat_screen';
+  static const String id = 'personal_chat_screen';
   final String receiverId;
 
   const PersonalChatScreen({super.key, required this.receiverId});
@@ -30,7 +32,7 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
         //print(loggedInUser!.email);
       }
     } catch (e) {
-      print(e);
+      debugPrint("$e");
     }
   }
 
@@ -59,20 +61,15 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Container(
-                decoration: kMessageContainerDecoration,
+                decoration: ContainerDecorations.kMessageContainerDecoration,
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    Expanded(
-                      child: TextField(
-                        controller: messageTextController,
-                        onChanged: (value) {
-                          messageText.value = value;
-                          //Do something with the user input.
-                        },
-                        decoration: kMessageTextFieldDecoration,
-                        style: const TextStyle(color: Colors.blueGrey),
-                      ),
+                    MessageField(
+                      onChanged: (value) {
+                        messageText.value = value;
+                      },
+                      controller: messageTextController,
                     ),
                     Padding(
                       padding: const EdgeInsets.only(right: 8.0),
@@ -93,16 +90,8 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
                         child: ValueListenableBuilder(
                           valueListenable: messageText,
                           builder: (context, val, child) {
-                            return CircleAvatar(
-                              backgroundColor: val == ""
-                                  ? AppColors.toChatColor.withOpacity(0.5)
-                                  : AppColors.toChatColor,
-                              radius: 20,
-                              child: const Padding(
-                                padding: EdgeInsets.only(left: 4.0),
-                                child: Icon(Icons.send,
-                                    color: Colors.white, size: 18),
-                              ),
+                            return SendButton(
+                              isActive: val == "",
                             );
                           },
                         ),
