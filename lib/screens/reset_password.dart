@@ -1,5 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flash_chat/constants.dart';
+import 'package:flash_chat/utils/constants.dart';
 import 'package:flash_chat/reusable_components/toasts/custom_toast.dart';
 import 'package:flash_chat/services/email_validation.dart';
 import 'package:flash_chat/services/error_messages.dart';
@@ -85,8 +85,8 @@ class _ResetFormState extends State<ResetForm> {
                   controller: _controller,
                 ),
                 const SizedBox(height: 24.0),
-                ReusableWidgets().textButton(
-                  function: validateEmail(_controller.value.text) != null
+                ReusableWidgets().customButton(
+                  onTap: validateEmail(_controller.value.text) != null
                       ? () {
                           setState(() {
                             _submitted = true;

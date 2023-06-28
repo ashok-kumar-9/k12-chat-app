@@ -1,8 +1,10 @@
-import 'package:flash_chat/constants.dart';
 import 'package:flash_chat/screens/group_chat_screen.dart';
 import 'package:flash_chat/screens/login_screen.dart';
 import 'package:flash_chat/services/shared_prefs.dart';
+import 'package:flash_chat/utils/constants.dart';
 import 'package:flutter/material.dart';
+
+import '../utils/screen_size.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -34,7 +36,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final double screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       backgroundColor: AppColors.bgColor,
       body: Center(
@@ -43,8 +45,8 @@ class _SplashScreenState extends State<SplashScreen> {
           children: [
             const Spacer(),
             Container(
-              height: screenHeight * 0.25,
-              width: screenHeight * 0.25,
+              height: ScreenSize.screenHeight * 0.25,
+              width: ScreenSize.screenHeight * 0.25,
               decoration: BoxDecoration(
                   image: const DecorationImage(
                       image: AssetImage('images/logo.png'),
@@ -52,7 +54,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   borderRadius: BorderRadius.circular(24)),
             ),
             Container(
-              height: screenHeight * 0.06,
+              height: ScreenSize.screenHeight * 0.06,
               decoration: BoxDecoration(
                   image: const DecorationImage(
                       image: AssetImage('images/pow_by.png'),
@@ -65,7 +67,7 @@ class _SplashScreenState extends State<SplashScreen> {
               style: TextStyle(color: Colors.white, fontSize: 16),
               // textAlign: TextAlign.center,
             ),
-            SizedBox(height: screenHeight * 0.05),
+            SizedBox(height: ScreenSize.screenHeight * 0.05),
           ],
         ),
       ),
