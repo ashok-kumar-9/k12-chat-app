@@ -5,6 +5,7 @@ import 'package:flash_chat/screens/login_screen.dart';
 import 'package:flash_chat/screens/onboarding/on_boarding_screen.dart';
 import 'package:flash_chat/screens/registration_screen.dart';
 import 'package:flash_chat/screens/splash_screen.dart';
+import 'package:flash_chat/services/message_handler.dart';
 import 'package:flash_chat/services/shared_prefs.dart';
 import 'package:flash_chat/utils/screen_size.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +17,8 @@ import 'screens/reset_password.dart';
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
 }
+
+final messaging = FirebaseMessaging.instance;
 
 void main() async {
   //using this for notification channels
@@ -31,7 +34,15 @@ void main() async {
   const AndroidNotificationChannel channel = AndroidNotificationChannel(
     'group_chat',
     'Group Chat',
-    description: 'Your Channel Description',
+    description: 'The Group Chat Messages notificaiton',
+    importance: Importance.low,
+    enableVibration: true,
+  );
+
+  const AndroidNotificationChannel channel2 = AndroidNotificationChannel(
+    'personal_chat',
+    'Personal Chat',
+    description: 'DMs (maybe creepy)',
     importance: Importance.high,
   );
 
@@ -42,22 +53,26 @@ void main() async {
       .resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(channel);
+  await flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(channel2);
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await SharedPrefs().init();
-  final messaging = FirebaseMessaging.instance;
 
-  // final settings = await messaging.requestPermission(
-  //   alert: true,
-  //   announcement: false,
-  //   badge: true,
-  //   carPlay: false,
-  //   criticalAlert: false,
-  //   provisional: false,
-  //   sound: true,
-  // );
+  // final settings =
+  await messaging.requestPermission(
+    alert: true,
+    announcement: false,
+    badge: true,
+    carPlay: false,
+    criticalAlert: false,
+    provisional: false,
+    sound: true,
+  );
   //
   // String? token = await messaging.getToken();
 
@@ -83,7 +98,8 @@ class FlashChat extends StatelessWidget {
       ),
       initialRoute: "splash",
       routes: {
-        GroupChatScreen.id: (context) => const GroupChatScreen(),
+        GroupChatScreen.id: (context) =>
+            const MessageHandler(child: GroupChatScreen()),
         LoginScreen.id: (context) => const LoginScreen(),
         RegistrationScreen.id: (context) => const RegistrationScreen(),
         ResetPasswordScreen.id: (context) => const ResetPasswordScreen(),
