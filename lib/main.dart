@@ -8,6 +8,7 @@ import 'package:flash_chat/screens/splash_screen.dart';
 import 'package:flash_chat/services/shared_prefs.dart';
 import 'package:flash_chat/utils/screen_size.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'firebase_options.dart';
 import 'screens/reset_password.dart';
@@ -17,7 +18,31 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 }
 
 void main() async {
+  //using this for notification channels
   WidgetsFlutterBinding.ensureInitialized();
+  const AndroidInitializationSettings initializationSettingsAndroid =
+      AndroidInitializationSettings('app_icon');
+  const InitializationSettings initializationSettings = InitializationSettings(
+    android: initializationSettingsAndroid,
+  );
+  await FlutterLocalNotificationsPlugin().initialize(initializationSettings);
+
+  // Create Android notification channel
+  const AndroidNotificationChannel channel = AndroidNotificationChannel(
+    'group_chat',
+    'Group Chat',
+    description: 'Your Channel Description',
+    importance: Importance.high,
+  );
+
+  // Configure notification channel settings
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+  await flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(channel);
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
