@@ -11,7 +11,9 @@ import '../reusable_components/message_text_field.dart';
 import '../services/shared_prefs.dart';
 
 final _firestore = FirebaseFirestore.instance;
+final messaging = FirebaseMessaging.instance;
 User? loggedInUser;
+String? token;
 var userId;
 
 Future<void> saveTokenToDatabase(String token) async {
@@ -44,13 +46,18 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
 
   Future<void> setupToken() async {
     // Get the token each time the application loads
-    String? token = await FirebaseMessaging.instance.getToken();
+    token = await FirebaseMessaging.instance.getToken();
 
     // Save the initial token to the database
     await saveTokenToDatabase(token!);
+    debugPrint(token);
 
     // Any time the token refreshes, store this in the database too.
     FirebaseMessaging.instance.onTokenRefresh.listen(saveTokenToDatabase);
+    //Also subscribe to the topic group_chat
+
+    const topic = 'app_promotion';
+    await messaging.subscribeToTopic(topic);
   }
 
   void getCurrentUser() {
@@ -90,6 +97,23 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                 onPressed: () {
                   _auth.signOut();
                   SharedPrefs().clearSharedPrefs();
+                  //unsubbing when loggin out
+                  messaging.unsubscribeFromTopic('group_chat');
+                  _firestore
+                      .collection('users')
+                      .where('token', isEqualTo: token)
+                      .get()
+                      .then((value) {
+                    for (var element in value.docs) {
+                      FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(element.id)
+                          .delete()
+                          .then((value) {
+                        debugPrint('Success!');
+                      });
+                    }
+                  });
                   Navigator.of(context).popAndPushNamed('splash');
                 }),
           ],

@@ -78,8 +78,8 @@ void main() async {
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-  const topic = 'app_promotion';
-  await messaging.subscribeToTopic(topic);
+  // const topic = 'app_promotion';
+  // await messaging.subscribeToTopic(topic);
 
   runApp(const FlashChat());
 }
@@ -90,7 +90,7 @@ class FlashChat extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ScreenSize.init(context);
-    
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark().copyWith(
