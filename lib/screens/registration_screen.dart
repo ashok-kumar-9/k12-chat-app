@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flash_chat/utils/constants.dart';
 import 'package:flash_chat/reusable_components/toasts/custom_toast.dart';
 import 'package:flash_chat/screens/group_chat_screen.dart';
 import 'package:flash_chat/services/error_messages.dart';
+import 'package:flash_chat/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
@@ -18,28 +18,16 @@ extension EmailValidator on String {
   }
 }
 
-class RegistrationScreen extends StatelessWidget {
+class RegistrationScreen extends StatefulWidget {
   static const String id = 'registration_screen';
 
   const RegistrationScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.bgColor,
-      body: const RegsiterForm(),
-    );
-  }
+  State<RegistrationScreen> createState() => _RegistrationScreenState();
 }
 
-class RegsiterForm extends StatefulWidget {
-  const RegsiterForm({super.key});
-
-  @override
-  State<RegsiterForm> createState() => _RegsiterFormState();
-}
-
-class _RegsiterFormState extends State<RegsiterForm> {
+class _RegistrationScreenState extends State<RegistrationScreen> {
   final _controller = TextEditingController();
   final _auth = FirebaseAuth.instance;
   String? email;
@@ -74,47 +62,42 @@ class _RegsiterFormState extends State<RegsiterForm> {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: _controller,
-      builder: (context, TextEditingValue value, __) {
-        return ModalProgressHUD(
-          inAsyncCall: _saving,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                Flexible(
-                  child: Hero(
-                    tag: 'logo',
-                    child: SizedBox(
-                      height: 150.0,
-                      child: Image.asset('images/logo.png'),
-                    ),
+    return Scaffold(
+      backgroundColor: AppColors.bgColor,
+      body: ValueListenableBuilder(
+        valueListenable: _controller,
+        builder: (context, TextEditingValue value, __) {
+          return ModalProgressHUD(
+            inAsyncCall: _saving,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: PaddingConstants.padding3),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  ReusableWidgets().appLogoImage(),
+                  const SizedBox(height: SpacerConstant.spacer3 * 2),
+                  CredentialsTextField(
+                    onChanged: (value) {
+                      email = value;
+                    },
+                    isPassword: false,
+                    isSubmitted: _submitted,
+                    controller: _controller,
                   ),
-                ),
-                const SizedBox(height: 48.0),
-                CredentialsTextField(
-                  onChanged: (value) {
-                    email = value;
-                  },
-                  isPassword: false,
-                  isSubmitted: _submitted,
-                  controller: _controller,
-                ),
-                const SizedBox(height: 12.0),
-                CredentialsTextField(
-                  onChanged: (value) {
-                    //Do something with the user input.
-                    setState(() {
-                      password = value;
-                    });
-                  },
-                  isPassword: true,
-                ),
-                const SizedBox(height: 24.0),
-                ReusableWidgets().customButton(
+                  const SizedBox(height: SpacerConstant.spacer2),
+                  CredentialsTextField(
+                    onChanged: (value) {
+                      //Do something with the user input.
+                      setState(() {
+                        password = value;
+                      });
+                    },
+                    isPassword: true,
+                  ),
+                  const SizedBox(height: SpacerConstant.spacer3),
+                  ReusableWidgets().customButton(
                     onTap: password == null || password == ''
                         ? () {
                             setState(() {
@@ -143,7 +126,8 @@ class _RegsiterFormState extends State<RegsiterForm> {
                                 setState(() {
                                   _saving = false;
                                 });
-                                showCustomToast(message: 'Welcome to Flash Chat');
+                                showCustomToast(
+                                    message: 'Welcome to Flash Chat');
                               } on FirebaseAuthException catch (e) {
                                 setState(() {
                                   _saving = false;
@@ -164,33 +148,36 @@ class _RegsiterFormState extends State<RegsiterForm> {
                             email == null ||
                             password == null ||
                             email == '')
-                        ? Colors.grey[400]!
-                        : Colors.blueAccent,
+                        ? AppColors.grey
+                        : AppColors.blue,
                     shadowColor: (password == '' ||
                             email == null ||
                             password == null ||
                             email == '')
-                        ? Colors.blueAccent
-                        : Colors.grey[400]!),
-                const SizedBox(height: 24.0),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    TextButton(
-                      child: const Text(
-                        'Already a user',
+                        ? AppColors.blue
+                        : AppColors.grey,
+                  ),
+                  const SizedBox(height: SpacerConstant.spacer3),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(
+                        child: const Text(
+                          'Already a user',
+                          style: TextStyle(color: AppColors.blue),
+                        ),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
                       ),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }

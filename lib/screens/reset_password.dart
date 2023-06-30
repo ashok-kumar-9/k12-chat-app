@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flash_chat/utils/constants.dart';
 import 'package:flash_chat/reusable_components/toasts/custom_toast.dart';
 import 'package:flash_chat/services/email_validation.dart';
 import 'package:flash_chat/services/error_messages.dart';
+import 'package:flash_chat/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
@@ -61,21 +61,14 @@ class _ResetFormState extends State<ResetForm> {
         return ModalProgressHUD(
           inAsyncCall: _saving,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            padding: const EdgeInsets.symmetric(
+                horizontal: PaddingConstants.padding3),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                Flexible(
-                  child: Hero(
-                    tag: 'logo',
-                    child: SizedBox(
-                      height: 150.0,
-                      child: Image.asset('images/logo.png'),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 24.0),
+                ReusableWidgets().appLogoImage(),
+                const SizedBox(height: SpacerConstant.spacer3),
                 CredentialsTextField(
                   onChanged: (value) {
                     email = value;
@@ -84,7 +77,7 @@ class _ResetFormState extends State<ResetForm> {
                   isSubmitted: _submitted,
                   controller: _controller,
                 ),
-                const SizedBox(height: 24.0),
+                const SizedBox(height: SpacerConstant.spacer3),
                 ReusableWidgets().customButton(
                   onTap: validateEmail(_controller.value.text) != null
                       ? () {
@@ -105,7 +98,8 @@ class _ResetFormState extends State<ResetForm> {
                               setState(() {
                                 _saving = false;
                               });
-                              showCustomToast(message: 'Reset link sent to your email.');
+                              showCustomToast(
+                                  message: 'Reset link sent to your email.');
                               Navigator.pop(context);
                             } on FirebaseAuthException catch (e) {
                               setState(() {
@@ -123,13 +117,13 @@ class _ResetFormState extends State<ResetForm> {
                         },
                   buttonText: 'Receive reset link on your email',
                   color: (email == null || email == '')
-                      ? Colors.grey[400]!
-                      : Colors.blueAccent,
+                      ? AppColors.grey
+                      : AppColors.blue,
                   shadowColor: (email == null || email == '')
-                      ? Colors.blueAccent
-                      : Colors.grey[400]!,
+                      ? AppColors.blue
+                      : AppColors.grey,
                 ),
-                const SizedBox(height: 36.0),
+                const SizedBox(height: SpacerConstant.spacer4),
               ],
             ),
           ),

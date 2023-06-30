@@ -1,30 +1,43 @@
+import 'package:flash_chat/utils/constants.dart';
+import 'package:flash_chat/utils/screen_size.dart';
 import 'package:flutter/material.dart';
 
 class ReusableWidgets {
   GestureDetector customButton(
       {required Function() onTap,
       required String buttonText,
-      Color color = Colors.black,
-      Color shadowColor = Colors.blueAccent}) {
+      Color color = AppColors.black,
+      Color shadowColor = AppColors.blue}) {
     return GestureDetector(
       onTap: onTap,
       child: SizedBox(
-        height: 50,
+        height: ScreenSize.screenHeight * 0.05,
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 32.0),
+          padding:
+              EdgeInsets.symmetric(horizontal: ScreenSize.screenWidth * 0.08),
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8.0),
+              borderRadius:
+                  BorderRadius.circular(RadiusConstants.kBorderRadius),
               color: color,
               boxShadow: [
                 BoxShadow(
                     color: shadowColor,
-                    blurRadius: 0.0,
                     spreadRadius: 1.0,
-                    offset: const Offset(3.0, 2.5))
+                    offset: const Offset(2.5, 2.0))
               ]),
-          child: Center(
-              child: Text(buttonText,
-                  style: const TextStyle(color: Colors.white))),
+          child: Center(child: Text(buttonText)),
+        ),
+      ),
+    );
+  }
+
+  Flexible appLogoImage() {
+    return Flexible(
+      child: Hero(
+        tag: 'logo',
+        child: SizedBox(
+          height: ScreenSize.screenHeight * 0.15,
+          child: Image.asset('images/logo.png'),
         ),
       ),
     );
